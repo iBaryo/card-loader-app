@@ -1,11 +1,11 @@
 import 'package:card_loader/models/Provider.dart';
-import 'package:card_loader/models/CardLoader.dart';
+import 'package:card_loader/services/CardLoader.dart';
 import 'package:card_loader/resources/ProvidersRepo.dart';
-import 'package:card_loader/resources/UserRepo.dart';
+import 'package:card_loader/resources/ProfileRepo.dart';
 import 'package:rxdart/rxdart.dart';
 
 class LoaderBloc {
-  final UserRepo _userRepo;
+  final ProfileRepo _userRepo;
   final ProvidersRepo _providersRepo;
   final CardLoader _cardLoader;
 
@@ -15,7 +15,7 @@ class LoaderBloc {
   Stream<Iterable<ProviderDetails>> get availableProviders =>
       _availableProviderNamesFetcher.stream;
 
-  LoaderBloc(UserRepo userRepo, ProvidersRepo providers, CardLoader cardLoader)
+  LoaderBloc(ProfileRepo userRepo, ProvidersRepo providers, CardLoader cardLoader)
       : _userRepo = userRepo,
         _providersRepo = providers,
         _cardLoader = cardLoader;

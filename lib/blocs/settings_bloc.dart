@@ -1,15 +1,20 @@
+import 'package:card_loader/models/NotificationSettings.dart';
 import 'package:card_loader/models/Profile.dart';
 import 'package:card_loader/models/Provider.dart';
 import 'package:card_loader/resources/ProvidersRepo.dart';
-import 'package:card_loader/resources/UserRepo.dart';
+import 'package:card_loader/resources/NotificationsRepo.dart';
+import 'package:card_loader/resources/ProfileRepo.dart';
 
 class SettingsBloc {
   ProvidersRepo _providersRepo;
-  UserRepo _userRepo;
+  ProfileRepo _userRepo;
+  NotificationsRepo _notificationSettings;
 
-  SettingsBloc(ProvidersRepo providersRepo, UserRepo userRepo)
+  SettingsBloc(ProvidersRepo providersRepo, ProfileRepo userRepo,
+      NotificationsRepo notificationSettings)
       : _providersRepo = providersRepo,
-        _userRepo = userRepo;
+        _userRepo = userRepo,
+        _notificationSettings = notificationSettings;
 
   // todo: make the 2 below a stream?
   Future<Iterable<ProviderAvailability>> getProviders() async {
@@ -18,10 +23,16 @@ class SettingsBloc {
         isAvailable: available.contains(provider), provider: provider));
   }
 
-  Future<Profile> getProfile() => _userRepo.get();
+  Future<Settings> getSettings() async => Settings(
+      profile: await _userRepo.get(),
+      notificationSettings: await _notificationSettings.get());
 
   setProfile(Profile profile) async {
     await _userRepo.set(profile);
+  }
+
+  setNotificationSettings(NotificationSettings settings) async {
+    await _notificationSettings.set(settings);
   }
 }
 
@@ -32,4 +43,13 @@ class ProviderAvailability {
   ProviderAvailability({bool isAvailable, Provider provider})
       : isAvailable = isAvailable,
         provider = provider;
+}
+
+class Settings {
+  Profile profile;
+  NotificationSettings notificationSettings;
+
+  Settings({Profile profile, NotificationSettings notificationSettings})
+      : profile = profile,
+        notificationSettings = notificationSettings;
 }
