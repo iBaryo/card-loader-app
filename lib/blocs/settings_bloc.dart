@@ -6,43 +6,40 @@ import 'package:card_loader/resources/NotificationsRepo.dart';
 import 'package:card_loader/resources/ProfileRepo.dart';
 
 class SettingsBloc {
-  ProvidersRepo _providersRepo;
-  ProfileRepo _userRepo;
-  NotificationsRepo _notificationSettings;
+  ProvidersRepo providersRepo;
+  ProfileRepo profileRepo;
+  NotificationsRepo notificationRepo;
 
-  SettingsBloc(ProvidersRepo providersRepo, ProfileRepo userRepo,
-      NotificationsRepo notificationSettings)
-      : _providersRepo = providersRepo,
-        _userRepo = userRepo,
-        _notificationSettings = notificationSettings;
+  SettingsBloc({this.providersRepo, this.profileRepo, this.notificationRepo});
 
   // todo: make the 2 below a stream?
-  Future<Iterable<ProviderAvailability>> getProviders() async {
-    final available = await _providersRepo.getAvailable();
-    return _providersRepo.getAll().map((provider) => ProviderAvailability(
-        isAvailable: available.contains(provider), provider: provider));
+  Future<List<ProviderAvailability>> getProviders() async {
+    final available = await providersRepo.getAvailable();
+    return providersRepo
+        .getAll()
+        .map((provider) => ProviderAvailability(
+            isAvailable: available.contains(provider), details: provider))
+        .toList();
   }
 
   Future<Settings> getSettings() async => Settings(
-      profile: await _userRepo.get(),
-      notificationSettings: await _notificationSettings.get());
+      profile: await profileRepo.get(),
+      notificationSettings: await notificationRepo.get());
 
   setProfile(Profile profile) async {
-    await _userRepo.set(profile);
+    await profileRepo.set(profile);
   }
 
   setNotificationSettings(NotificationSettings settings) async {
-    await _notificationSettings.set(settings);
+    await notificationRepo.set(settings);
   }
 }
 
 class ProviderAvailability {
   bool isAvailable;
-  Provider provider;
+  ProviderDetails details;
 
-  ProviderAvailability({bool isAvailable, Provider provider})
-      : isAvailable = isAvailable,
-        provider = provider;
+  ProviderAvailability({this.isAvailable, this.details});
 }
 
 class Settings {

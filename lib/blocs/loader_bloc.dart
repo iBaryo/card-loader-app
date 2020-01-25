@@ -10,9 +10,9 @@ class CardLoaderBloc {
   final CardLoader cardLoader;
 
   final _availableProviderNamesFetcher =
-      PublishSubject<Iterable<ProviderDetails>>();
+      PublishSubject<List<ProviderDetails>>();
 
-  Stream<Iterable<ProviderDetails>> get availableProviders$ =>
+  Stream<List<ProviderDetails>> get availableProviders$ =>
       _availableProviderNamesFetcher.stream;
 
   CardLoaderBloc({this.profileRepo, this.providersRepo, this.cardLoader});
@@ -29,7 +29,7 @@ class CardLoaderBloc {
   }
 
   fetchProviders() async {
-    Iterable<ProviderDetails> providers =
+    List<ProviderDetails> providers =
         await providersRepo.getAvailable();
 
     _availableProviderNamesFetcher.sink.add(providers);

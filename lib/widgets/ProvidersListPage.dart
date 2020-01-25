@@ -26,7 +26,7 @@ class ProvidersListPage extends StatelessWidget {
             stream: bloc.availableProviders$,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                return buildList(snapshot.data as Iterable<ProviderDetails>);
+                return buildList(snapshot.data as List<ProviderDetails>);
               } else if (snapshot.hasError) {
                 return buildError(snapshot.error);
               } else {
@@ -39,7 +39,7 @@ class ProvidersListPage extends StatelessWidget {
     );
   }
 
-  Widget buildList(Iterable<ProviderDetails> providers) {
+  Widget buildList(List<ProviderDetails> providers) {
     if (providers.length == 0) {
       return buildMessage('No configured providers');
     } else {

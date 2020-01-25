@@ -1,6 +1,8 @@
 import 'package:card_loader/blocs/loader_bloc.dart';
 import 'package:card_loader/blocs/provider_bloc.dart';
+import 'package:card_loader/blocs/settings_bloc.dart';
 import 'package:card_loader/providers.dart';
+import 'package:card_loader/resources/NotificationsRepo.dart';
 import 'package:card_loader/resources/ProfileRepo.dart';
 import 'package:card_loader/resources/ProvidersRepo.dart';
 import 'package:card_loader/routes.dart';
@@ -44,25 +46,46 @@ Ioc setupIoc() {
     return ProfileRepo(storage: ioc.use(Storage));
   }, singleton: true);
 
+  ioc.bind(NotificationsRepo, (ioc) {
+    print('init notifications repo...');
+    return NotificationsRepo();
+  }, singleton: true);
+
   //#endregion
 
   //#region  blocs
-  ioc.bind(ProviderSetupBloc, (ioc) => ProviderSetupBloc(repo: ioc.use(ProvidersRepo)), singleton: true);
+  ioc.bind(ProviderSetupBloc,
+      (ioc) => ProviderSetupBloc(repo: ioc.use(ProvidersRepo)),
+      singleton: true);
 
-  ioc.bind(CardLoaderBloc, (ioc) => CardLoaderBloc(
-      profileRepo: ioc.use(ProfileRepo),
-      providersRepo: ioc.use(ProvidersRepo),
-      cardLoader: ioc.use(CardLoader)
-    ), singleton: true);
+  ioc.bind(
+      SettingsBloc,
+      (ioc) => SettingsBloc(
+          profileRepo: ioc.use(ProfileRepo),
+          providersRepo: ioc.use(ProvidersRepo),
+          notificationRepo: ioc.use(NotificationsRepo)),
+      singleton: true);
+
+  ioc.bind(
+      CardLoaderBloc,
+      (ioc) => CardLoaderBloc(
+          profileRepo: ioc.use(ProfileRepo),
+          providersRepo: ioc.use(ProvidersRepo),
+          cardLoader: ioc.use(CardLoader)),
+      singleton: true);
 
   //#endregion
 
   //#region widgets
-  ioc.bind(HomePage, (ioc) => HomePage(routes: ioc.use(ROUTES)), singleton: true, lazy: true);
+  ioc.bind(HomePage, (ioc) => HomePage(routes: ioc.use(ROUTES)),
+      singleton: true, lazy: true);
 
-  ioc.bind(ProvidersListPage, (ioc) => ProvidersListPage(bloc: ioc.use(CardLoaderBloc)), lazy: true);
+  ioc.bind(ProvidersListPage,
+      (ioc) => ProvidersListPage(bloc: ioc.use(CardLoaderBloc)),
+      lazy: true);
 
-  ioc.bind(SettingsPage, (ioc) => SettingsPage(), lazy: true);
+  ioc.bind(SettingsPage, (ioc) => SettingsPage(bloc: ioc.use(SettingsBloc)),
+      lazy: true);
   //#endregion
 
   return ioc;

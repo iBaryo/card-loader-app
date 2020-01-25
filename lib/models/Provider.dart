@@ -6,7 +6,7 @@ abstract class ProviderProfileData {}
 
 abstract class ProviderDetails {
   String get name;
-
+  String get desc;
   String get icon;
 }
 

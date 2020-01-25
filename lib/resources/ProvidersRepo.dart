@@ -28,11 +28,13 @@ class ProvidersRepo {
   }
 
 
-  Iterable<Provider> getAll() => _providers.values;
+  List<Provider> getAll() => _providers.values.toList();
 
-  Future<Iterable<Provider>> getAvailable() async {
+  Future<List<Provider>> getAvailable() async {
     final availableProviders = await _getProvidersData();
-    return availableProviders.keys.map((provName) => _providers[provName]);
+    return availableProviders.keys.toList()
+          .map((provName) => _providers[provName])
+          .toList();
   }
 
   Future<T> getProviderData<T extends ProviderProfileData>(String providerName) async {
