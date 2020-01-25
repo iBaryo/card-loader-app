@@ -1,4 +1,3 @@
-import 'package:card_loader/models/Profile.dart';
 import 'package:card_loader/models/Provider.dart';
 import 'package:card_loader/services/storage.dart';
 

@@ -68,7 +68,7 @@ class SettingsPage extends StatelessWidget {
           children: <Widget>[
             ListTile(
               leading: Icon(
-                Icons.album,
+                provider.details.icon,
                 size: 50,
               ),
               title: Text(provider.details.name),
@@ -81,10 +81,10 @@ class SettingsPage extends StatelessWidget {
   }
 
   List<Widget> buildProviderButtons(ProviderAvailability provider) {
-    if (provider.isAvailable) {
+    if (!provider.isConfigured) {
       return <Widget>[
         FlatButton(
-          child: const Text('SETUP'),
+          child: const Text('DETAILS & SETUP'),
           onPressed: () {
             /* ... */
           },
@@ -93,13 +93,13 @@ class SettingsPage extends StatelessWidget {
     } else {
       return [
         FlatButton(
-          child: const Text('UPDATE'),
+          child: Text('REMOVE', style: TextStyle(color: Colors.red)),
           onPressed: () {
             /* ... */
           },
         ),
         FlatButton(
-          child: const Text('REMOVE'),
+          child: const Text('UPDATE'),
           onPressed: () {
             /* ... */
           },

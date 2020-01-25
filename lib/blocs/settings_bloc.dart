@@ -18,7 +18,7 @@ class SettingsBloc {
     return providersRepo
         .getAll()
         .map((provider) => ProviderAvailability(
-            isAvailable: available.contains(provider), details: provider))
+            isConfigured: available.contains(provider), details: provider))
         .toList();
   }
 
@@ -36,10 +36,10 @@ class SettingsBloc {
 }
 
 class ProviderAvailability {
-  bool isAvailable;
+  bool isConfigured;
   ProviderDetails details;
 
-  ProviderAvailability({this.isAvailable, this.details});
+  ProviderAvailability({this.isConfigured, this.details});
 }
 
 class Settings {
