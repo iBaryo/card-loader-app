@@ -1,15 +1,15 @@
 import 'package:card_loader/models/Provider.dart';
 import 'package:card_loader/resources/ProvidersRepo.dart';
 
-class ProviderBloc {
-  ProvidersRepo _providersRepo;
+class ProviderSetupBloc {
+  ProvidersRepo repo;
 
-  ProviderBloc(ProvidersRepo providersRepo) : _providersRepo = providersRepo;
+  ProviderSetupBloc({this.repo});
 
   // todo: stream?
-  Future<ProviderDetails> get<T extends ProviderData>(String providerName) =>
-      _providersRepo.getProviderData(providerName);
+  Future<ProviderDetails> get<T extends ProviderProfileData>(String providerName) =>
+      repo.getProviderData(providerName);
 
-  set<T extends ProviderData>(String providerName, T data) =>
-      _providersRepo.save(providerName, data);
+  set<T extends ProviderProfileData>(String providerName, T data) =>
+      repo.save(providerName, data);
 }

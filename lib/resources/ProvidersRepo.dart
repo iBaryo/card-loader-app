@@ -3,33 +3,39 @@ import 'package:card_loader/models/Provider.dart';
 import 'package:card_loader/services/storage.dart';
 
 class ProvidersRepo {
-  Storage _storage;
+  Storage storage;
   Map<String, Provider> _providers;
-  Map<String, ProviderData> _providersData;
+  Map<String, ProviderProfileData> _providersData;
 
-  ProvidersRepo(Storage storage, List<Provider> providers)
-      : _storage = storage,
-        _providers = Map<String, Provider>.fromIterable(providers,
+  ProvidersRepo({this.storage, List<Provider> providers})
+      : _providers = Map<String, Provider>.fromIterable(providers,
             key: (provider) => provider.name, value: (provider) => provider);
 
-  Future<ProviderLoader> createLoader(Profile profile, String providerName) async {
-    final providersData = await _getProvidersData();
-    if (!_providers.containsKey(providerName)
-        || !providersData.containsKey(providerName)) {
+  Future<ProviderLoader> createLoader(String providerName) async {
+    if (!_providers.containsKey(providerName)) {
+      // unsupported provider.
       return null;
     }
 
-    return _providers[providerName].createLoader(profile, providersData[providerName]);
+    final providersData = await _getProvidersData();
+    if (!providersData.containsKey(providerName)) {
+      // provider with no setup.
+      return null;
+    }
+
+    return _providers[providerName].createLoader(providersData[providerName]);
 
   }
+
 
   Iterable<Provider> getAll() => _providers.values;
 
-  Future<List<Provider>> getAvailable() async {
-    return (await _getProvidersData()).keys.map((pName) => _providers[pName]);
+  Future<Iterable<Provider>> getAvailable() async {
+    final availableProviders = await _getProvidersData();
+    return availableProviders.keys.map((provName) => _providers[provName]);
   }
 
-  Future<T> getProviderData<T extends ProviderData>(String providerName) async {
+  Future<T> getProviderData<T extends ProviderProfileData>(String providerName) async {
     final providers = await _getProvidersData();
     if (!providers.containsKey(providerName)) {
       return null;
@@ -39,16 +45,17 @@ class ProvidersRepo {
     }
   }
 
-  Future<Map<String, ProviderData>> _getProvidersData() async {
+  Future<Map<String, ProviderProfileData>> _getProvidersData() async {
     if (_providersData == null) {
-      _providersData = await _storage.get('providers');
+      print('loading configured providers');
+      _providersData = (await storage.get('providers')) ?? Map<String, ProviderProfileData>();
     }
     return _providersData;
   }
 
-  save(String providerName, ProviderData data) async {
+  save(String providerName, ProviderProfileData data) async {
     final providersData = await _getProvidersData();
     providersData[providerName] = data;
-    await _storage.set('providers', providersData);
+    await storage.set('providers', providersData);
   }
 }

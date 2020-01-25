@@ -4,26 +4,35 @@ import 'package:card_loader/resources/ProvidersRepo.dart';
 import 'package:card_loader/resources/ProfileRepo.dart';
 import 'package:rxdart/rxdart.dart';
 
-class LoaderBloc {
-  final ProfileRepo _userRepo;
-  final ProvidersRepo _providersRepo;
-  final CardLoader _cardLoader;
+class CardLoaderBloc {
+  final ProfileRepo profileRepo;
+  final ProvidersRepo providersRepo;
+  final CardLoader cardLoader;
 
   final _availableProviderNamesFetcher =
       PublishSubject<Iterable<ProviderDetails>>();
 
-  Stream<Iterable<ProviderDetails>> get availableProviders =>
+  Stream<Iterable<ProviderDetails>> get availableProviders$ =>
       _availableProviderNamesFetcher.stream;
 
-  LoaderBloc(ProfileRepo userRepo, ProvidersRepo providers, CardLoader cardLoader)
-      : _userRepo = userRepo,
-        _providersRepo = providers,
-        _cardLoader = cardLoader;
+  CardLoaderBloc({this.profileRepo, this.providersRepo, this.cardLoader});
+
+  Future<bool> hasRequiredInfo() async {
+    final profile = await profileRepo.get();
+    final res = [
+      profile.card,
+      profile.firstName,
+      profile.lastName
+    ].every((d) => (d?.toString() ?? '') != ''); // null or empty
+
+    return res;
+  }
 
   fetchProviders() async {
-    Iterable<ProviderDetails> providerNames =
-        await _providersRepo.getAvailable();
-    _availableProviderNamesFetcher.sink.add(providerNames);
+    Iterable<ProviderDetails> providers =
+        await providersRepo.getAvailable();
+
+    _availableProviderNamesFetcher.sink.add(providers);
   }
 
   dispose() {
@@ -31,13 +40,13 @@ class LoaderBloc {
   }
 
   loadToProvider(String providerName, int sum) async {
-    final profile = await _userRepo.get();
     final providerLoader =
-        await _providersRepo.createLoader(profile, providerName);
+        await providersRepo.createLoader(providerName);
     if (providerLoader == null) {
       // todo: throw
     } else {
-      await _cardLoader.load(providerLoader, sum);
+      final profile = await profileRepo.get();
+      await cardLoader.loadToProvider(providerLoader, profile, sum);
     }
   }
 }

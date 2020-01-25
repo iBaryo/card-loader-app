@@ -1,14 +1,18 @@
+import 'package:card_loader/models/Profile.dart';
 import 'package:card_loader/models/Provider.dart';
-import 'package:card_loader/services/network.dart';
+import 'package:http/http.dart';
 
 class CardLoader {
-  Network _network;
-  CardLoader(Network network): _network = network;
-
-  Future<ProviderResponse> load(ProviderLoader loader, int sum) async {
-    var payload = await loader.fetchPayload(sum);
-    var rawRes = await _network.send(loader.httpMethod, loader.url, payload);
+  Future<ProviderResponse> loadToProvider(
+      ProviderLoader loader, Profile profile, int sum) async {
+    final provReq = loader.createRequest(profile, sum);
+    var rawRes = await send(provReq);
     return loader.parseResponse(rawRes);
   }
-}
 
+  Future<String> send(ProviderRequest providerRequest) async {
+    final res = await post(providerRequest.url,
+        body: providerRequest.body, headers: providerRequest.headers);
+    return res.body;
+  }
+}

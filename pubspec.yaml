@@ -19,9 +19,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_local_notifications: ^0.8.4+3
+#  flutter_local_notifications: ^0.8.4+3
   rxdart: ^0.23.1
   http: ^0.12.0+2
+  ioc: ^0.3.0
 
 
   # The following adds the Cupertino Icons font to your application.
