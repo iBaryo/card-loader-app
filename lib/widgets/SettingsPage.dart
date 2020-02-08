@@ -1,17 +1,16 @@
 import 'dart:ui';
-
 import 'package:card_loader/blocs/settings_bloc.dart';
-import 'package:card_loader/models/Provider.dart';
 import 'package:flutter/material.dart';
 
 class SettingsPage extends StatelessWidget {
   SettingsBloc bloc;
+  Future<T> Function<T>(BuildContext context, Route<T> route) navigatorPush;
 
-  SettingsPage({this.bloc});
+  SettingsPage({this.bloc, this.navigatorPush = Navigator.push});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return ListView(
       children: <Widget>[
         Center(
           child: Card(
@@ -49,7 +48,7 @@ class SettingsPage extends StatelessWidget {
               return Center(child: CircularProgressIndicator());
             } else {
               final providerCards =
-                  snapshot.data.map((provider) => buildProvider(provider)).toList();
+                  snapshot.data.map((provider) => buildProvider(context, provider)).toList();
 
               return Column(
                 children: providerCards,
@@ -61,7 +60,7 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
-  Widget buildProvider(ProviderAvailability provider) {
+  Widget buildProvider(BuildContext context, ProviderAvailability provider) {
     return Card(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -74,19 +73,19 @@ class SettingsPage extends StatelessWidget {
               title: Text(provider.details.name),
               subtitle: Text(provider.details.desc),
             ),
-            ButtonBar(children: buildProviderButtons(provider)),
+            ButtonBar(children: buildProviderButtons(context, provider)),
           ],
         ),
       );
   }
 
-  List<Widget> buildProviderButtons(ProviderAvailability provider) {
+  List<Widget> buildProviderButtons(BuildContext context, ProviderAvailability provider) {
     if (!provider.isConfigured) {
       return <Widget>[
         FlatButton(
           child: const Text('DETAILS & SETUP'),
-          onPressed: () {
-            /* ... */
+          onPressed: () async {
+            Navigator.pushNamed(context, 'provider', arguments: provider.details);
           },
         ),
       ];

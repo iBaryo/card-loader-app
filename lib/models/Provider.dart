@@ -9,15 +9,16 @@ class ProviderDetails {
   String name;
   String desc;
   IconData icon;
+  MaterialColor color;
+
+  ProviderDetails(this.name, this.desc, this.icon, this.color);
 }
 
 class Provider<T extends ProviderProfileData> extends ProviderDetails {
-  String name;
-  String desc;
-  IconData icon;
   ProviderLoader Function(T providerProfileData) createLoader;
 
-  Provider({this.name, this. desc, this.icon, this.createLoader});
+  Provider({String name, String desc, IconData icon, MaterialColor color, this.createLoader})
+      : super(name, desc, icon, color);
 }
 
 class ProviderLoader {
@@ -47,7 +48,7 @@ class ProviderRequest {
   String body;
 
   ProviderRequest(url, {String body, Map<String, String> headers})
-      :  url = url,
+      : url = url,
         body = body,
         headers = headers;
 

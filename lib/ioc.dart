@@ -8,6 +8,7 @@ import 'package:card_loader/resources/ProvidersRepo.dart';
 import 'package:card_loader/routes.dart';
 import 'package:card_loader/services/CardLoader.dart';
 import 'package:card_loader/services/storage.dart';
+import 'package:card_loader/widgets/DestinationViewFactory.dart';
 import 'package:card_loader/widgets/HomePage.dart';
 import 'package:card_loader/widgets/ProvidersListPage.dart';
 import 'package:card_loader/widgets/SettingsPage.dart';
@@ -19,8 +20,9 @@ Ioc setupIoc() {
   print('init ioc...');
 
   final ioc = Ioc();
+  ioc.bind(Ioc, (ioc) => ioc, singleton: true);
 
-  ioc.bind(ROUTES, (ioc) => getRoutes(ioc), singleton: true, lazy: true);
+  ioc.bind(ROUTES, (ioc) => getRoutes(), singleton: true, lazy: true);
 
   //#region  services
   ioc.bind(Storage, (ioc) {
@@ -77,7 +79,10 @@ Ioc setupIoc() {
   //#endregion
 
   //#region widgets
-  ioc.bind(HomePage, (ioc) => HomePage(routes: ioc.use(ROUTES)),
+
+  ioc.bind(DestinationViewFactory, (ioc) => DestinationViewFactory(ioc));
+
+  ioc.bind(HomePage, (ioc) => HomePage(destFactory: ioc.use(DestinationViewFactory), routes: ioc.use(ROUTES)),
       singleton: true, lazy: true);
 
   ioc.bind(ProvidersListPage,

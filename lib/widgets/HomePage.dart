@@ -1,15 +1,16 @@
 import 'package:card_loader/routes.dart';
-import 'package:card_loader/widgets/DestinationPage.dart';
+import 'package:card_loader/widgets/DestinationViewFactory.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 class HomePage extends StatefulWidget {
-  final List<Destination> routes;
+  final List<MainRoute> routes;
+  final DestinationViewFactory destFactory;
 
-  HomePage({this.routes});
+  HomePage({this.destFactory, this.routes});
 
   @override
-  _HomePageState createState() => _HomePageState(routes);
+  _HomePageState createState() => _HomePageState(destFactory, routes);
 }
 
 class _HomePageState extends State<HomePage>
@@ -18,16 +19,18 @@ class _HomePageState extends State<HomePage>
   List<AnimationController> _faders;
   AnimationController _hide;
   int _currentIndex = 0;
-  List<Destination> routes;
 
-  _HomePageState(this.routes);
+  final List<MainRoute> routes;
+  final DestinationViewFactory destFactory;
+
+  _HomePageState(this.destFactory, this.routes);
 
   @override
   void initState() {
     super.initState();
 
     _faders =
-        routes.map<AnimationController>((Destination destination) {
+        routes.map<AnimationController>((MainRoute destination) {
           return AnimationController(
               vsync: this, duration: Duration(milliseconds: 200));
         }).toList();
@@ -46,19 +49,17 @@ class _HomePageState extends State<HomePage>
   }
 
   bool _handleScrollNotification(ScrollNotification notification) {
-    if (notification.depth == 0) {
-      if (notification is UserScrollNotification) {
-        final UserScrollNotification userScroll = notification;
-        switch (userScroll.direction) {
-          case ScrollDirection.forward:
-            _hide.forward();
-            break;
-          case ScrollDirection.reverse:
-            _hide.reverse();
-            break;
-          case ScrollDirection.idle:
-            break;
-        }
+    if (notification.depth == 0 && notification is UserScrollNotification) {
+      final UserScrollNotification userScroll = notification;
+      switch (userScroll.direction) {
+        case ScrollDirection.forward:
+          _hide.forward();
+          break;
+        case ScrollDirection.reverse:
+          _hide.reverse();
+          break;
+        case ScrollDirection.idle:
+          break;
       }
     }
     return false;
@@ -73,13 +74,13 @@ class _HomePageState extends State<HomePage>
           top: false,
           child: Stack(
             fit: StackFit.expand,
-            children: routes.map((Destination destination) {
+            children: routes.map((MainRoute destination) {
               final Widget view = FadeTransition(
                 opacity: _faders[destination.index]
                     .drive(CurveTween(curve: Curves.fastOutSlowIn)),
                 child: KeyedSubtree(
                   key: _destinationKeys[destination.index],
-                  child: DestinationView(
+                  child: destFactory.create(
                     destination: destination,
                     onNavigation: () {
                       _hide.forward();
@@ -111,7 +112,7 @@ class _HomePageState extends State<HomePage>
                   _currentIndex = index;
                 });
               },
-              items: routes.map((Destination destination) {
+              items: routes.map((MainRoute destination) {
                 return BottomNavigationBarItem(
                     icon: Icon(destination.icon),
                     backgroundColor: destination.color,
@@ -136,35 +137,5 @@ class ViewNavigatorObserver extends NavigatorObserver {
 
   void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
     onNavigation();
-  }
-}
-
-class DestinationView extends StatefulWidget {
-  const DestinationView({Key key, this.destination, this.onNavigation})
-      : super(key: key);
-
-  final Destination destination;
-  final VoidCallback onNavigation;
-
-  @override
-  _DestinationViewState createState() => _DestinationViewState();
-}
-
-class _DestinationViewState extends State<DestinationView> {
-  @override
-  Widget build(BuildContext context) {
-    return Navigator(
-      observers: <NavigatorObserver>[
-        ViewNavigatorObserver(widget.onNavigation),
-      ],
-      onGenerateRoute: (RouteSettings settings) {
-        return MaterialPageRoute(
-          settings: settings,
-          builder: (BuildContext context) {
-            return DestinationPage(destination: widget.destination);
-          },
-        );
-      },
-    );
   }
 }
