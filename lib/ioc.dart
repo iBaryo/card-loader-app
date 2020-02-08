@@ -10,6 +10,7 @@ import 'package:card_loader/services/CardLoader.dart';
 import 'package:card_loader/services/storage.dart';
 import 'package:card_loader/widgets/DestinationViewFactory.dart';
 import 'package:card_loader/widgets/HomePage.dart';
+import 'package:card_loader/widgets/ProfilePage.dart';
 import 'package:card_loader/widgets/ProvidersListPage.dart';
 import 'package:card_loader/widgets/SettingsPage.dart';
 import 'package:ioc/ioc.dart';
@@ -91,6 +92,8 @@ Ioc setupIoc() {
 
   ioc.bind(SettingsPage, (ioc) => SettingsPage(bloc: ioc.use(SettingsBloc)),
       lazy: true);
+
+  ioc.bind(ProfilePage, (ioc) => ProfilePage());
   //#endregion
 
   return ioc;

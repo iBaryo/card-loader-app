@@ -4,9 +4,12 @@ import 'package:flutter/material.dart';
 
 class SettingsPage extends StatelessWidget {
   SettingsBloc bloc;
-  Future<T> Function<T>(BuildContext context, Route<T> route) navigatorPush;
+  Future Function(BuildContext context,
+      String routeName, {
+      Object arguments,
+      }) navigate;
 
-  SettingsPage({this.bloc, this.navigatorPush = Navigator.push});
+  SettingsPage({this.bloc, this.navigate = Navigator.pushNamed});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +33,7 @@ class SettingsPage extends StatelessWidget {
                     FlatButton(
                       child: const Text('UPDATE'),
                       onPressed: () {
-                        /* ... */
+                        navigate(context, 'profile');
                       },
                     ),
                   ],
@@ -48,7 +51,8 @@ class SettingsPage extends StatelessWidget {
               return Center(child: CircularProgressIndicator());
             } else {
               final providerCards =
-                  snapshot.data.map((provider) => buildProvider(context, provider)).toList();
+              snapshot.data.map((provider) => buildProvider(context, provider))
+                  .toList();
 
               return Column(
                 children: providerCards,
@@ -62,30 +66,31 @@ class SettingsPage extends StatelessWidget {
 
   Widget buildProvider(BuildContext context, ProviderAvailability provider) {
     return Card(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            ListTile(
-              leading: Icon(
-                provider.details.icon,
-                size: 50,
-              ),
-              title: Text(provider.details.name),
-              subtitle: Text(provider.details.desc),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          ListTile(
+            leading: Icon(
+              provider.details.icon,
+              size: 50,
             ),
-            ButtonBar(children: buildProviderButtons(context, provider)),
-          ],
-        ),
-      );
+            title: Text(provider.details.name),
+            subtitle: Text(provider.details.desc),
+          ),
+          ButtonBar(children: buildProviderButtons(context, provider)),
+        ],
+      ),
+    );
   }
 
-  List<Widget> buildProviderButtons(BuildContext context, ProviderAvailability provider) {
+  List<Widget> buildProviderButtons(BuildContext context,
+      ProviderAvailability provider) {
     if (!provider.isConfigured) {
       return <Widget>[
         FlatButton(
           child: const Text('DETAILS & SETUP'),
           onPressed: () async {
-            Navigator.pushNamed(context, 'provider', arguments: provider.details);
+            navigate(context, 'provider', arguments: provider.details);
           },
         ),
       ];

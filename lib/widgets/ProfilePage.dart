@@ -1,4 +1,10 @@
+import 'package:card_loader/routes.dart';
 import 'package:flutter/material.dart';
+
+class ProfilePageDestination extends Destination {
+  ProfilePageDestination()
+      : super(PageDetails('Profile', Colors.cyan), (ioc) => ioc.use(ProfilePage));
+}
 
 class ProfilePage extends StatefulWidget {
   @override

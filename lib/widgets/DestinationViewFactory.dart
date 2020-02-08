@@ -1,5 +1,6 @@
 import 'package:card_loader/models/Provider.dart';
 import 'package:card_loader/routes.dart';
+import 'package:card_loader/widgets/ProfilePage.dart';
 import 'package:card_loader/widgets/WidgetPage.dart';
 import 'package:card_loader/widgets/ProviderPage.dart';
 import 'package:flutter/material.dart';
@@ -62,7 +63,7 @@ class _DestinationViewState extends State<DestinationView> {
   Destination getDestination(RouteSettings settings) {
     switch (settings.name) {
       case 'profile':
-        return null;
+        return ProfilePageDestination();
       case 'provider':
         return ProviderDestination(settings.arguments as ProviderDetails);
       default:
