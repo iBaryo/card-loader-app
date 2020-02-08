@@ -5,31 +5,36 @@ import 'package:card_loader/widgets/SettingsPage.dart';
 import 'package:flutter/material.dart';
 import 'package:ioc/ioc.dart';
 
-class Destination {
+class PageDetails {
   final String title;
   final MaterialColor color;
-  final Widget Function(Ioc ioc) widgetFactory;
 
-  Destination(this.title, this.color, this.widgetFactory);
+  PageDetails(this.title, this.color);
 }
 
-class ProviderDestination extends Destination {
-  ProviderDestination(ProviderDetails provider)
-      : super(provider.name, provider.color, (ioc) => ProviderPage(provider));
+class Destination {
+  final PageDetails details;
+  final Widget Function(Ioc ioc) widgetFactory;
+
+  Destination(this.details, this.widgetFactory);
 }
 
 class MainRoute extends Destination {
   final int index;
   final IconData icon;
 
-  MainRoute(this.index, title, this.icon, color, Widget Function(Ioc ioc) widgetFactory)
-      : super(title, color, widgetFactory);
+  MainRoute(this.index, PageDetails details, this.icon,
+      Widget Function(Ioc ioc) widgetFactory)
+      : super(details, widgetFactory);
 }
 
-List<MainRoute> getRoutes() =>
-    <MainRoute>[
-      MainRoute(0, 'Settings', Icons.settings, Colors.teal,
-              (Ioc ioc) => ioc.use(SettingsPage)),
-      MainRoute(1, 'Load', Icons.send, Colors.red,
-              (Ioc ioc) => ioc.use(ProvidersListPage)),
+List<MainRoute> getRoutes() => <MainRoute>[
+      MainRoute(0,
+          PageDetails('Settings', Colors.teal),
+          Icons.settings,
+          (Ioc ioc) => ioc.use(SettingsPage)),
+      MainRoute(1,
+          PageDetails('Load', Colors.red),
+          Icons.send,
+          (Ioc ioc) => ioc.use(ProvidersListPage)),
     ];

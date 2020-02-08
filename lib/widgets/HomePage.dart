@@ -115,8 +115,8 @@ class _HomePageState extends State<HomePage>
               items: routes.map((MainRoute destination) {
                 return BottomNavigationBarItem(
                     icon: Icon(destination.icon),
-                    backgroundColor: destination.color,
-                    title: Text(destination.title));
+                    backgroundColor: destination.details.color,
+                    title: Text(destination.details.title));
               }).toList(),
             ),
           ),
@@ -126,16 +126,3 @@ class _HomePageState extends State<HomePage>
   }
 }
 
-class ViewNavigatorObserver extends NavigatorObserver {
-  ViewNavigatorObserver(this.onNavigation);
-
-  final VoidCallback onNavigation;
-
-  void didPop(Route<dynamic> route, Route<dynamic> previousRoute) {
-    onNavigation();
-  }
-
-  void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
-    onNavigation();
-  }
-}
