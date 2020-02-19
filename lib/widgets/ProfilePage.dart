@@ -1,61 +1,114 @@
+import 'package:card_loader/models/Profile.dart';
+import 'package:card_loader/resources/ProfileRepo.dart';
 import 'package:card_loader/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class ProfilePageDestination extends Destination {
   ProfilePageDestination()
-      : super(PageDetails('Profile', Colors.cyan), (ioc) => ioc.use(ProfilePage));
+      : super(
+      PageDetails('Profile', Colors.cyan), (ioc) => ioc.use(ProfilePage));
 }
 
 class ProfilePage extends StatefulWidget {
+  final ProfileRepo profileRepo;
+  ProfilePage(this.profileRepo);
+
   @override
   State<StatefulWidget> createState() {
-    return ProfilePageState();
+    return ProfilePageState(profileRepo);
   }
 }
 
 // Create a corresponding State class.
 // This class holds data related to the form.
 class ProfilePageState extends State<ProfilePage> {
-  // Create a global key that uniquely identifies the Form widget
-  // and allows validation of the form.
-  //
-  // Note: This is a GlobalKey<FormState>,
-  // not a GlobalKey<MyCustomFormState>.
   final _formKey = GlobalKey<FormState>();
+  final ProfileRepo profileRepo;
+
+  ProfilePageState(this.profileRepo);
 
   @override
   Widget build(BuildContext context) {
-    // Build a Form widget using the _formKey created above.
-    return Form(
-      key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          TextFormField(
-            validator: (value) {
-              if (value.isEmpty) {
-                return 'Please enter some text';
-              }
-              return null;
-            },
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0),
-            child: RaisedButton(
-              onPressed: () {
-                // Validate returns true if the form is valid, or false
-                // otherwise.
-                if (_formKey.currentState.validate()) {
-                  // If the form is valid, display a Snackbar.
-                  Scaffold.of(context)
-                      .showSnackBar(SnackBar(content: Text('Processing Data')));
-                }
-              },
-              child: Text('Submit'),
-            ),
-          ),
-        ],
-      ),
+
+    return SafeArea(
+        top: false,
+        bottom: false,
+        child: FutureBuilder<Profile>(
+          future: profileRepo.get(),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Text(
+                'fuck'
+              );
+            }
+            else if (!snapshot.hasData) {
+              return Center(child: CircularProgressIndicator());
+            }
+            else {
+              final Profile profile = snapshot.data;
+              return Form(
+                  key: _formKey,
+                  autovalidate: true,
+                  child: new ListView(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    children: <Widget>[
+                      new TextFormField(
+                        decoration: const InputDecoration(
+                          icon: const Icon(Icons.credit_card),
+                          hintText: 'Enter your Cibus card number',
+                          labelText: 'Card Number',
+                        ),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          WhitelistingTextInputFormatter.digitsOnly,
+                        ],
+                        validator: (val) => val.isEmpty ? 'required' : null,
+                        initialValue: profile.card.number,
+                        onSaved: (val) => profile.card.number = val,
+                      ),
+                      new TextFormField(
+                        decoration: const InputDecoration(
+                          icon: const Icon(Icons.person),
+                          hintText: 'Enter your first name',
+                          labelText: 'First name',
+                        ),
+                        keyboardType: TextInputType.text,
+                        validator: (val) => val.isEmpty ? 'required' : null,
+                        initialValue: profile.firstName,
+                        onSaved: (val) => profile.firstName = val,
+                      ),
+                      new TextFormField(
+                        decoration: const InputDecoration(
+                          icon: const Icon(Icons.person_outline),
+                          hintText: 'Enter your last name',
+                          labelText: 'Last name',
+                        ),
+                        keyboardType: TextInputType.text,
+                        validator: (val) => val.isEmpty ? 'required' : null,
+                        initialValue: profile.lastName,
+                        onSaved: (val) => profile.lastName = val,
+                      ),
+                      new Container(
+                          padding: const EdgeInsets.only(left: 20.0, top: 20.0),
+                          child: new RaisedButton(
+                            child: const Text('Save'),
+                            onPressed: () async {
+                              final FormState form = _formKey.currentState;
+
+                              if (form.validate()) {
+                                form.save();
+                                await profileRepo.set(profile);
+                                Scaffold.of(context).showSnackBar(
+                                    SnackBar(content: Text('Saved')));
+                              }
+                            },
+                          )),
+                    ],
+                  ));
+            }
+          },
+        )
     );
   }
 }

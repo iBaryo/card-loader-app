@@ -1,10 +1,12 @@
 class Storage {
-  Future<Map<String, dynamic>> get(String key) {
+  Map<String, dynamic> _cache = Map<String, dynamic>();
+  Future<T> get<T>(String key) {
     // TODO
-    return null;
+    return Future.value(_cache.containsKey(key) ? _cache[key] as T : null);
   }
 
-  set(String key, Map<String, dynamic> data) {
+  set(String key, dynamic data) {
     // TODO
+    _cache[key] = data;
   }
 }

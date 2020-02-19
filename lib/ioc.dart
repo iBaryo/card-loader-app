@@ -93,7 +93,7 @@ Ioc setupIoc() {
   ioc.bind(SettingsPage, (ioc) => SettingsPage(bloc: ioc.use(SettingsBloc)),
       lazy: true);
 
-  ioc.bind(ProfilePage, (ioc) => ProfilePage());
+  ioc.bind(ProfilePage, (ioc) => ProfilePage(ioc.use(ProfileRepo)));
   //#endregion
 
   return ioc;
