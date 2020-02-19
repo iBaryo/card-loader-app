@@ -9,16 +9,17 @@ class ProviderDetails {
   String name;
   String desc;
   IconData icon;
+  String image;
   MaterialColor color;
 
-  ProviderDetails(this.name, this.desc, this.icon, this.color);
+  ProviderDetails(this.name, this.desc, this.icon, this.image, this.color);
 }
 
 class Provider<T extends ProviderProfileData> extends ProviderDetails {
   ProviderLoader Function(T providerProfileData) createLoader;
 
-  Provider({String name, String desc, IconData icon, MaterialColor color, this.createLoader})
-      : super(name, desc, icon, color);
+  Provider({String name, String desc, IconData icon, String image, MaterialColor color, this.createLoader})
+      : super(name, desc, icon, image, color);
 }
 
 class ProviderLoader {

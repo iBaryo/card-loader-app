@@ -7,6 +7,7 @@ List<Provider> defineProviders() {
         name: 'Teva-Castel',
         desc: 'pricey place with quality stuff',
         icon: Icons.nature,
+        image: 'veggies.jpg',
         color: Colors.green,
         createLoader: (providerProfileData) {
           return ProviderLoader(createRequest: (profile, sum) {
@@ -19,7 +20,8 @@ List<Provider> defineProviders() {
         name: 'Segev-Express',
         desc: 'meaty meat',
         icon: Icons.fastfood,
-        color: Colors.orange,
+        image: 'segev.jpg',
+        color: Colors.grey,
         createLoader: (providerProfileData) {
           return ProviderLoader(createRequest: (profile, sum) {
             return null;
