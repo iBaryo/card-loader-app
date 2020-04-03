@@ -8,7 +8,7 @@ import 'package:card_loader/resources/ProvidersRepo.dart';
 import 'package:card_loader/routes.dart';
 import 'package:card_loader/services/CardLoader.dart';
 import 'package:card_loader/services/MemoryStorage.dart';
-import 'package:card_loader/services/storage.dart';
+import 'package:card_loader/services/Storage.dart';
 import 'package:card_loader/widgets/DestinationViewFactory.dart';
 import 'package:card_loader/widgets/HomePage.dart';
 import 'package:card_loader/widgets/ProfilePage.dart';

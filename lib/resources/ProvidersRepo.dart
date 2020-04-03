@@ -1,5 +1,5 @@
 import 'package:card_loader/models/Provider.dart';
-import 'package:card_loader/services/storage.dart';
+import 'package:card_loader/services/Storage.dart';
 
 class ProvidersRepo {
   Storage storage;

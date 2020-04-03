@@ -1,5 +1,5 @@
 import 'package:card_loader/models/Profile.dart';
-import 'package:card_loader/services/storage.dart';
+import 'package:card_loader/services/Storage.dart';
 
 const String STORAGE_KEY = 'profile';
 

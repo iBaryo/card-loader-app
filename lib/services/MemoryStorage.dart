@@ -1,4 +1,4 @@
-import 'package:card_loader/services/storage.dart';
+import 'package:card_loader/services/Storage.dart';
 
 class MemoryStorage implements Storage {
   Map<String, dynamic> _cache = Map<String, dynamic>();
