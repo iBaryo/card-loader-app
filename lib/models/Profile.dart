@@ -1,5 +1,5 @@
 class Profile {
-  static Profile empty() => Profile('', '', Card());
+  static Profile empty() => Profile('', '', Card(''));
 
   Profile(this.firstName, this.lastName, this.card);
 
@@ -10,4 +10,5 @@ class Profile {
 
 class Card {
   String number;
+  Card(this.number);
 }

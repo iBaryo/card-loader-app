@@ -42,6 +42,7 @@ class SettingsPage extends StatelessWidget {
             ),
           ),
         ),
+        Divider(thickness: 5),
         FutureBuilder<List<ProviderAvailability>>(
           future: bloc.getProviders(),
           builder: (context, snapshot) {

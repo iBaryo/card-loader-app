@@ -7,6 +7,7 @@ import 'package:card_loader/resources/ProfileRepo.dart';
 import 'package:card_loader/resources/ProvidersRepo.dart';
 import 'package:card_loader/routes.dart';
 import 'package:card_loader/services/CardLoader.dart';
+import 'package:card_loader/services/MemoryStorage.dart';
 import 'package:card_loader/services/storage.dart';
 import 'package:card_loader/widgets/DestinationViewFactory.dart';
 import 'package:card_loader/widgets/HomePage.dart';
@@ -31,6 +32,10 @@ Ioc setupIoc() {
     return Storage();
   }, singleton: true);
 
+  ioc.bind(MemoryStorage, (ioc) {
+    return MemoryStorage();
+  });
+
   ioc.bind(CardLoader, (ioc) {
     print('init card loader service...');
     return CardLoader();
@@ -41,7 +46,7 @@ Ioc setupIoc() {
   ioc.bind(ProvidersRepo, (ioc) {
     print('init providers repo...');
     return ProvidersRepo(
-        storage: ioc.use(Storage), providers: defineProviders());
+        storage: ioc.use(MemoryStorage), providers: defineProviders());
   }, singleton: true);
 
   ioc.bind(ProfileRepo, (ioc) {
