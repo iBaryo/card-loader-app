@@ -5,33 +5,62 @@ const String STORAGE_KEY = 'profile';
 
 class ProfileRepo {
   Storage storage;
+  Profile _profile;
 
   ProfileRepo({this.storage});
 
   Future<Profile> get() async {
+    if (_profile == null) {
+      _profile = await loadProfile();
+    }
+    return _profile;
+  }
+
+  Future<Profile> loadProfile() async {
     var profileJson = await storage.get(STORAGE_KEY);
     if (profileJson == null) {
       return Profile.empty();
     }
     try {
+      var card = profileJson['card'],
+          budget = profileJson['budget'],
+          bSettings = budget['settings'],
+          bState = budget['state'];
+
       return Profile(
           profileJson['firstName'],
           profileJson['lastName'],
-          Card(profileJson['card']['number']));
-    }
-    catch (e) {
+          Card(card['number']),
+          Budget(
+              BudgetSettings(bSettings['limit'],
+                  BudgetFrequency.values[bSettings['frequency']]),
+              BudgetState(bState['used'],
+                  DateTime.fromMicrosecondsSinceEpoch(bState['until']))));
+    } catch (e) {
       print('profile serializer error');
       return Profile.empty();
     }
   }
 
   set(Profile profile) async {
+    var budget = profile.budget;
+
     storage.set(STORAGE_KEY, {
       'firstName': profile.firstName,
       'lastName': profile.lastName,
-      'card': {
-        'number': profile.card.number
+      'card': {'number': profile.card.number},
+      'budget': {
+        'settings': {
+          'limit': budget.settings.limit,
+          'frequency': budget.settings.frequency.index
+        },
+        'state': {
+          'used': budget.state.used,
+          'until': budget.state.until.microsecondsSinceEpoch
+        }
       }
     });
+
+    _profile = null;
   }
 }

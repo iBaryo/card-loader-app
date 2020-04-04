@@ -2,8 +2,6 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Storage {
-  Map<String, dynamic> _cache = Map<String, dynamic>();
-
   Future<dynamic> get(String key) async {
     var prefs = await SharedPreferences.getInstance();
     var res = prefs.getString(key);

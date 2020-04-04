@@ -7,11 +7,12 @@ import 'package:flutter/services.dart';
 class ProfilePageDestination extends Destination {
   ProfilePageDestination()
       : super(
-      PageDetails('Profile', Colors.cyan), (ioc) => ioc.use(ProfilePage));
+            PageDetails('Profile', Colors.cyan), (ioc) => ioc.use(ProfilePage));
 }
 
 class ProfilePage extends StatefulWidget {
   final ProfileRepo profileRepo;
+
   ProfilePage(this.profileRepo);
 
   @override
@@ -30,7 +31,6 @@ class ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-
     return SafeArea(
         top: false,
         bottom: false,
@@ -38,14 +38,10 @@ class ProfilePageState extends State<ProfilePage> {
           future: profileRepo.get(),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
-              return Text(
-                'fuck'
-              );
-            }
-            else if (!snapshot.hasData) {
+              return Text('fuck');
+            } else if (!snapshot.hasData) {
               return Center(child: CircularProgressIndicator());
-            }
-            else {
+            } else {
               final Profile profile = snapshot.data;
               return Form(
                   key: _formKey,
@@ -53,20 +49,6 @@ class ProfilePageState extends State<ProfilePage> {
                   child: new ListView(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     children: <Widget>[
-                      new TextFormField(
-                        decoration: const InputDecoration(
-                          icon: const Icon(Icons.credit_card),
-                          hintText: 'Enter your Cibus card number',
-                          labelText: 'Card Number',
-                        ),
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          WhitelistingTextInputFormatter.digitsOnly,
-                        ],
-                        validator: (val) => val.isEmpty ? 'required' : null,
-                        initialValue: profile.card.number,
-                        onSaved: (val) => profile.card.number = val,
-                      ),
                       new TextFormField(
                         decoration: const InputDecoration(
                           icon: const Icon(Icons.person),
@@ -89,6 +71,60 @@ class ProfilePageState extends State<ProfilePage> {
                         initialValue: profile.lastName,
                         onSaved: (val) => profile.lastName = val,
                       ),
+                      new TextFormField(
+                        decoration: const InputDecoration(
+                          icon: const Icon(Icons.credit_card),
+                          hintText: 'Enter your Cibus card number',
+                          labelText: 'Card Number',
+                        ),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          WhitelistingTextInputFormatter.digitsOnly,
+                        ],
+                        validator: (val) => val.isEmpty ? 'required' : null,
+                        initialValue: profile.card.number,
+                        onSaved: (val) => profile.card.number = val,
+                      ),
+                      new TextFormField(
+                        decoration: const InputDecoration(
+                          icon: const Icon(Icons.attach_money),
+                          hintText: 'Enter your budget limit',
+                          labelText: 'Credit Limit',
+                        ),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          WhitelistingTextInputFormatter.digitsOnly,
+                        ],
+                        validator: (val) => val.isEmpty ? 'required' : null,
+                        initialValue: profile.budget.settings.limit.toString(),
+                        onSaved: (val) =>
+                            profile.budget.settings.limit = double.parse(val),
+                      ),
+                      Column(
+                        children: <Widget>[
+                          RadioListTile<BudgetFrequency>(
+                            title: const Text('Daily'),
+                            groupValue: profile.budget.settings.frequency,
+                            value: BudgetFrequency.DAILY,
+                            onChanged: (val) => setState(
+                                () => profile.budget.settings.frequency = val),
+                          ),
+                          RadioListTile<BudgetFrequency>(
+                            title: const Text('Weekly'),
+                            groupValue: profile.budget.settings.frequency,
+                            value: BudgetFrequency.WEEKLY,
+                            onChanged: (val) => setState(
+                                () => profile.budget.settings.frequency = val),
+                          ),
+                          RadioListTile<BudgetFrequency>(
+                            title: const Text('Monthly'),
+                            groupValue: profile.budget.settings.frequency,
+                            value: BudgetFrequency.MONTHLY,
+                            onChanged: (val) => setState(
+                                () => profile.budget.settings.frequency = val),
+                          ),
+                        ],
+                      ),
                       new Container(
                           padding: const EdgeInsets.only(left: 20.0, top: 20.0),
                           child: new RaisedButton(
@@ -108,7 +144,6 @@ class ProfilePageState extends State<ProfilePage> {
                   ));
             }
           },
-        )
-    );
+        ));
   }
 }
