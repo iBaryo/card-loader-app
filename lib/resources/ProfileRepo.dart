@@ -5,18 +5,14 @@ const String STORAGE_KEY = 'profile';
 
 class ProfileRepo {
   Storage storage;
-  Profile _profile;
 
   ProfileRepo({this.storage});
 
-  Future<Profile> get() async {
-    if (_profile == null) {
-      _profile = await loadProfile();
-    }
-    return _profile;
+  Future<Profile> get() {
+      return _loadProfile();
   }
 
-  Future<Profile> loadProfile() async {
+  Future<Profile> _loadProfile() async {
     var profileJson = await storage.get(STORAGE_KEY);
     if (profileJson == null) {
       return Profile.empty();
@@ -60,7 +56,5 @@ class ProfileRepo {
         }
       }
     });
-
-    _profile = null;
   }
 }

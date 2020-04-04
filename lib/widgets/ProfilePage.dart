@@ -26,8 +26,9 @@ class ProfilePage extends StatefulWidget {
 class ProfilePageState extends State<ProfilePage> {
   final _formKey = GlobalKey<FormState>();
   final ProfileRepo profileRepo;
+  Future<Profile> _profile;
 
-  ProfilePageState(this.profileRepo);
+  ProfilePageState(this.profileRepo): _profile = profileRepo.get();
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +36,7 @@ class ProfilePageState extends State<ProfilePage> {
         top: false,
         bottom: false,
         child: FutureBuilder<Profile>(
-          future: profileRepo.get(),
+          future: _profile,
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               return Text('fuck');
