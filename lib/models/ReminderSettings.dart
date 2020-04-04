@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 class ReminderSettings {
@@ -21,28 +23,33 @@ class ReminderSettings {
 
   List<int> getDays() {
     final days = List<int>();
-    if (2 ^ DateTime.monday & rawDays == 2 ^ DateTime.monday) {
+    if (hasDay(DateTime.monday)) {
       days.add(DateTime.monday);
     }
-    if (2 ^ DateTime.tuesday & rawDays == 2 ^ DateTime.tuesday) {
+    if (hasDay(DateTime.tuesday)) {
       days.add(DateTime.tuesday);
     }
-    if (2 ^ DateTime.wednesday & rawDays == 2 ^ DateTime.wednesday) {
+    if (hasDay(DateTime.wednesday)) {
       days.add(DateTime.wednesday);
     }
-    if (2 ^ DateTime.thursday & rawDays == 2 ^ DateTime.thursday) {
+    if (hasDay(DateTime.thursday)) {
       days.add(DateTime.thursday);
     }
-    if (2 ^ DateTime.friday & rawDays == 2 ^ DateTime.friday) {
+    if (hasDay(DateTime.friday)) {
       days.add(DateTime.friday);
     }
-    if (2 ^ DateTime.saturday & rawDays == 2 ^ DateTime.saturday) {
+    if (hasDay(DateTime.saturday)) {
       days.add(DateTime.saturday);
     }
-    if (2 ^ DateTime.sunday & rawDays == 2 ^ DateTime.sunday) {
+    if (hasDay(DateTime.sunday)) {
       days.add(DateTime.sunday);
     }
 
     return days;
+  }
+
+  bool hasDay(int rawDay) {
+    final day = pow(2, rawDay).toInt();
+    return (day & rawDays != 0);
   }
 }
