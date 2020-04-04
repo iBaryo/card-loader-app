@@ -2,7 +2,7 @@ import 'package:card_loader/blocs/loader_bloc.dart';
 import 'package:card_loader/blocs/provider_bloc.dart';
 import 'package:card_loader/blocs/settings_bloc.dart';
 import 'package:card_loader/providers.dart';
-import 'package:card_loader/resources/NotificationsRepo.dart';
+import 'package:card_loader/resources/ReminderRepo.dart';
 import 'package:card_loader/resources/ProfileRepo.dart';
 import 'package:card_loader/resources/ProvidersRepo.dart';
 import 'package:card_loader/routes.dart';
@@ -46,7 +46,8 @@ Ioc setupIoc() {
   ioc.bind(ProvidersRepo, (ioc) {
     print('init providers repo...');
     return ProvidersRepo(
-        storage: ioc.use(MemoryStorage), providers: defineProviders());
+        storage: ioc.use(MemoryStorage),
+        providers: defineProviders());
   }, singleton: true);
 
   ioc.bind(ProfileRepo, (ioc) {
@@ -54,9 +55,9 @@ Ioc setupIoc() {
     return ProfileRepo(storage: ioc.use(Storage));
   }, singleton: true);
 
-  ioc.bind(NotificationsRepo, (ioc) {
+  ioc.bind(ReminderRepo, (ioc) {
     print('init notifications repo...');
-    return NotificationsRepo();
+    return ReminderRepo(ioc.use(Storage));
   }, singleton: true);
 
   //#endregion
@@ -71,7 +72,7 @@ Ioc setupIoc() {
       (ioc) => SettingsBloc(
           profileRepo: ioc.use(ProfileRepo),
           providersRepo: ioc.use(ProvidersRepo),
-          notificationRepo: ioc.use(NotificationsRepo)),
+          notificationRepo: ioc.use(ReminderRepo)),
       singleton: true);
 
   ioc.bind(
@@ -88,8 +89,13 @@ Ioc setupIoc() {
 
   ioc.bind(DestinationViewFactory, (ioc) => DestinationViewFactory(ioc));
 
-  ioc.bind(HomePage, (ioc) => HomePage(destFactory: ioc.use(DestinationViewFactory), routes: ioc.use(ROUTES)),
-      singleton: true, lazy: true);
+  ioc.bind(
+      HomePage,
+      (ioc) => HomePage(
+          destFactory: ioc.use(DestinationViewFactory),
+          routes: ioc.use(ROUTES)),
+      singleton: true,
+      lazy: true);
 
   ioc.bind(ProvidersListPage,
       (ioc) => ProvidersListPage(bloc: ioc.use(CardLoaderBloc)),
@@ -98,7 +104,8 @@ Ioc setupIoc() {
   ioc.bind(SettingsPage, (ioc) => SettingsPage(bloc: ioc.use(SettingsBloc)),
       lazy: true);
 
-  ioc.bind(ProfilePage, (ioc) => ProfilePage(ioc.use(ProfileRepo)));
+  ioc.bind(ProfilePage,
+      (ioc) => ProfilePage(ioc.use(ProfileRepo), ioc.use(ReminderRepo)));
   //#endregion
 
   return ioc;

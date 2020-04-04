@@ -1,14 +1,14 @@
-import 'package:card_loader/models/NotificationSettings.dart';
+import 'package:card_loader/models/ReminderSettings.dart';
 import 'package:card_loader/models/Profile.dart';
 import 'package:card_loader/models/Provider.dart';
 import 'package:card_loader/resources/ProvidersRepo.dart';
-import 'package:card_loader/resources/NotificationsRepo.dart';
+import 'package:card_loader/resources/ReminderRepo.dart';
 import 'package:card_loader/resources/ProfileRepo.dart';
 
 class SettingsBloc {
   ProvidersRepo providersRepo;
   ProfileRepo profileRepo;
-  NotificationsRepo notificationRepo;
+  ReminderRepo notificationRepo;
 
   SettingsBloc({this.providersRepo, this.profileRepo, this.notificationRepo});
 
@@ -30,7 +30,7 @@ class SettingsBloc {
     await profileRepo.set(profile);
   }
 
-  setNotificationSettings(NotificationSettings settings) async {
+  setNotificationSettings(ReminderSettings settings) async {
     await notificationRepo.set(settings);
   }
 }
@@ -44,9 +44,9 @@ class ProviderAvailability {
 
 class Settings {
   Profile profile;
-  NotificationSettings notificationSettings;
+  ReminderSettings notificationSettings;
 
-  Settings({Profile profile, NotificationSettings notificationSettings})
+  Settings({Profile profile, ReminderSettings notificationSettings})
       : profile = profile,
         notificationSettings = notificationSettings;
 }
