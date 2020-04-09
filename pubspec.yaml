@@ -25,6 +25,7 @@ dependencies:
   ioc: ^0.3.0
   shared_preferences: ^0.5.6+3
   day_selector: ^1.0.0
+  url_launcher: ^5.4.2
 
 
 

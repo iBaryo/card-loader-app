@@ -46,7 +46,12 @@ class CardLoaderBloc {
       // todo: throw
     } else {
       final profile = await profileRepo.get();
-      await cardLoader.loadToProvider(providerLoader, profile, sum);
+      try {
+        await cardLoader.loadToProvider(providerLoader, profile, sum);
+      } catch (e) {
+        print('error loading to provider $providerName');
+        print(e);
+      }
     }
   }
 }

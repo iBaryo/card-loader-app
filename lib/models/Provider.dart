@@ -11,15 +11,24 @@ class ProviderDetails {
   IconData icon;
   String image;
   MaterialColor color;
+  List<String> requiredFields;
 
-  ProviderDetails(this.name, this.desc, this.icon, this.image, this.color);
+  ProviderDetails(this.name, this.desc, this.icon, this.image, this.color,
+      this.requiredFields);
 }
 
 class Provider<T extends ProviderProfileData> extends ProviderDetails {
   ProviderLoader Function(T providerProfileData) createLoader;
 
-  Provider({String name, String desc, IconData icon, String image, MaterialColor color, this.createLoader})
-      : super(name, desc, icon, image, color);
+  Provider(
+      {String name,
+      String desc,
+      IconData icon,
+      String image,
+      MaterialColor color,
+      List<String> requiredFields,
+      this.createLoader})
+      : super(name, desc, icon, image, color, requiredFields);
 }
 
 class ProviderLoader {
@@ -43,16 +52,10 @@ class ProviderLoader {
 //        parseResponse = parseResponse;
 }
 
-class ProviderRequest {
+abstract class ProviderRequest {
   String url;
-  Map<String, String> headers;
-  String body;
-
-  ProviderRequest(url, {String body, Map<String, String> headers})
-      : url = url,
-        body = body,
-        headers = headers;
-
+  ProviderRequest(this.url);
+  Future<String> send();
 }
 
 class ProviderResponse {}

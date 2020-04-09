@@ -31,13 +31,10 @@ class ProfilePageState extends State<ProfilePage> {
   final _formKey = GlobalKey<FormState>();
 
   final ProfileRepo profileRepo;
-//  final Future<Profile> _profile;
+  final ReminderRepo notificationsRepo;
+  final Future<List<dynamic>> _reqData;
 
   bool _showNotifications;
-  final ReminderRepo notificationsRepo;
-//  final Future<NotificationSettings> _notiSettings;
-
-  final Future<dynamic> _reqData;
 
   ProfilePageState(this.profileRepo, this.notificationsRepo)
       : _reqData =  Future.wait([

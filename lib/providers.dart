@@ -9,6 +9,7 @@ List<Provider> defineProviders() {
         icon: Icons.nature,
         image: 'veggies.jpg',
         color: Colors.green,
+        requiredFields: ['code'],
         createLoader: (providerProfileData) {
           return ProviderLoader(createRequest: (profile, sum) {
             return null;
@@ -22,6 +23,20 @@ List<Provider> defineProviders() {
         icon: Icons.fastfood,
         image: 'segev.jpg',
         color: Colors.grey,
+        requiredFields: ['bla'],
+        createLoader: (providerProfileData) {
+          return ProviderLoader(createRequest: (profile, sum) {
+            return null;
+          }, parseResponse: (rawResponse) {
+            return null;
+          });
+        }),
+    Provider(
+        name: 'Shufersal',
+        desc: 'groceries',
+        icon: Icons.shopping_cart,
+        image: 'segev.jpg',
+        color: Colors.red,
         createLoader: (providerProfileData) {
           return ProviderLoader(createRequest: (profile, sum) {
             return null;
