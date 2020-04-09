@@ -15,16 +15,43 @@ class NotificationsService {
   }
 
   show(Notification notification) async {
-    var platformChannelSpecifics = LocalNoti.NotificationDetails(
+    final platformChannelSpecifics = LocalNoti.NotificationDetails(
         LocalNoti.AndroidNotificationDetails(
             'cardLoader', 'single', 'single notifications'),
         LocalNoti.IOSNotificationDetails());
-    await _plugin.show(_notiId++, notification.title, notification.body,
+    await _plugin.show(++_notiId, notification.title, notification.body,
         platformChannelSpecifics,
         payload: notification.payload);
   }
 
-  schedule(List<int> days, TimeOfDay time, Notification notification) {}
+  Future<List<int>> schedule(
+      List<int> days, TimeOfDay time, Notification notification) {
+    final platformChannelSpecifics = LocalNoti.NotificationDetails(
+        LocalNoti.AndroidNotificationDetails(
+            'cardLoader', 'scheduled', 'schedule notifications'),
+        LocalNoti.IOSNotificationDetails());
+
+    return Future.wait(days.map(toLocalNotiDay).map((day) async {
+      await _plugin.showWeeklyAtDayAndTime(
+          ++_notiId,
+          notification.title,
+          notification.body,
+          day,
+          LocalNoti.Time(time.hour, time.minute),
+          platformChannelSpecifics);
+
+      return _notiId;
+    }));
+  }
+
+  final offSet = LocalNoti.Day.Monday.value - DateTime.monday - 1;
+  LocalNoti.Day toLocalNotiDay(int day) {
+    return LocalNoti.Day.values[(day + offSet) % DateTime.daysPerWeek];
+  }
+
+  Future<void> clear() {
+    return _plugin.cancelAll();
+  }
 }
 
 class Notification {

@@ -30,7 +30,10 @@ class ReminderRepo {
   }
 
   set(ReminderSettings settings) async {
-    await _notifications.schedule(settings.getDays(), settings.time,
+    await _notifications.clear();
+    await _notifications.schedule(
+        settings.getDays(),
+        settings.time,
         Notification('Time to Load!', 'So you won\'t miss you budget!'));
 
     final now = DateTime.now();
@@ -41,10 +44,12 @@ class ReminderRepo {
           .microsecondsSinceEpoch,
     });
 
-    await _notifications.show(Notification('Reminder was set', 'see you then!'));
+    await _notifications
+        .show(Notification('Reminder was set', 'see you then!'));
   }
 
   clear() async {
+    await _notifications.clear();
     await _storage.set(STORAGE_KEY, null);
   }
 }
