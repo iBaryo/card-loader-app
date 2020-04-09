@@ -44,6 +44,45 @@ List<Provider> defineProviders() {
             return null;
           });
         }),
+    Provider(
+        name: 'Victory',
+        desc: 'groceries',
+        icon: Icons.shopping_cart,
+        image: 'segev.jpg',
+        color: Colors.red,
+        createLoader: (providerProfileData) {
+          return ProviderLoader(createRequest: (profile, sum) {
+            return null;
+          }, parseResponse: (rawResponse) {
+            return null;
+          });
+        }),
+    Provider(
+        name: 'Shookit',
+        desc: 'vegetables',
+        icon: Icons.streetview,
+        image: 'segev.jpg',
+        color: Colors.red,
+        createLoader: (providerProfileData) {
+          return ProviderLoader(createRequest: (profile, sum) {
+            return null;
+          }, parseResponse: (rawResponse) {
+            return null;
+          });
+        }),
+    Provider(
+        name: 'Super Yuda',
+        desc: 'groceries',
+        icon: Icons.shopping_cart,
+        image: 'segev.jpg',
+        color: Colors.red,
+        createLoader: (providerProfileData) {
+          return ProviderLoader(createRequest: (profile, sum) {
+            return null;
+          }, parseResponse: (rawResponse) {
+            return null;
+          });
+        }),
 //    Provider(
 //        name: 'mock',
 //        desc: 'meaty meat',
