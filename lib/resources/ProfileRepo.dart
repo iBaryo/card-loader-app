@@ -1,3 +1,4 @@
+import 'package:card_loader/models/Budget.dart';
 import 'package:card_loader/models/Profile.dart';
 import 'package:card_loader/services/Storage.dart';
 
