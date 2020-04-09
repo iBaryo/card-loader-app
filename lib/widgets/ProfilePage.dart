@@ -40,7 +40,7 @@ class ProfilePageState extends State<ProfilePage> {
   ProfilePageState(this.profileRepo, this.notificationsRepo)
       : _reqData =  Future.wait([
           profileRepo.get(),        // 0
-          notificationsRepo.get()   // 1
+          notificationsRepo.get()   // 1   // TODO: why not bloc?
   ]);
 
   @override
@@ -222,13 +222,15 @@ class ProfilePageState extends State<ProfilePage> {
 
                               if (form.validate()) {
                                 form.save();
+                                await profileRepo.set(profile);
 
                                 if (!_showNotifications) {
-                                  notiSettings.reset();
+                                  await notificationsRepo.clear();
+                                }
+                                else {
+                                  await notificationsRepo.set(notiSettings);
                                 }
 
-                                await profileRepo.set(profile);
-                                await notificationsRepo.set(notiSettings);
                                 Scaffold.of(context).showSnackBar(
                                     SnackBar(content: Text('Saved')));
                               }

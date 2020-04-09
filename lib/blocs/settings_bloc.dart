@@ -20,18 +20,6 @@ class SettingsBloc {
             isConfigured: available.contains(provider), details: provider))
         .toList();
   }
-
-  Future<Settings> getSettings() async => Settings(
-      profile: await profileRepo.get(),
-      notificationSettings: await notificationRepo.get());
-
-  setProfile(Profile profile) async {
-    await profileRepo.set(profile);
-  }
-
-  setNotificationSettings(ReminderSettings settings) async {
-    await notificationRepo.set(settings);
-  }
 }
 
 class ProviderAvailability {
