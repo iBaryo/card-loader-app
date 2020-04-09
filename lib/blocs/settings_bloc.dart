@@ -1,9 +1,9 @@
 import 'package:card_loader/models/ReminderSettings.dart';
 import 'package:card_loader/models/Profile.dart';
 import 'package:card_loader/models/Provider.dart';
-import 'package:card_loader/resources/ProvidersRepo.dart';
-import 'package:card_loader/resources/ReminderRepo.dart';
-import 'package:card_loader/resources/ProfileRepo.dart';
+import 'package:card_loader/repos/ProvidersRepo.dart';
+import 'package:card_loader/repos/ReminderRepo.dart';
+import 'package:card_loader/repos/ProfileRepo.dart';
 
 class SettingsBloc {
   ProvidersRepo providersRepo;
@@ -12,7 +12,6 @@ class SettingsBloc {
 
   SettingsBloc({this.providersRepo, this.profileRepo, this.notificationRepo});
 
-  // todo: make the 2 below a stream?
   Future<List<ProviderAvailability>> getProviders() async {
     final available = await providersRepo.getAvailable();
     return providersRepo

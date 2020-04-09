@@ -1,8 +1,8 @@
 import 'package:card_loader/models/Budget.dart';
 import 'package:card_loader/models/ReminderSettings.dart';
 import 'package:card_loader/models/Profile.dart';
-import 'package:card_loader/resources/ReminderRepo.dart';
-import 'package:card_loader/resources/ProfileRepo.dart';
+import 'package:card_loader/repos/ReminderRepo.dart';
+import 'package:card_loader/repos/ProfileRepo.dart';
 import 'package:card_loader/routes.dart';
 import 'package:day_selector/day_selector.dart';
 import 'package:flutter/material.dart';
