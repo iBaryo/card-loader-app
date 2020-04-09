@@ -1,3 +1,4 @@
+import 'package:card_loader/models/Profile.dart';
 import 'package:card_loader/models/Provider.dart';
 import 'package:card_loader/services/CardLoader.dart';
 import 'package:card_loader/resources/ProvidersRepo.dart';
@@ -19,18 +20,14 @@ class CardLoaderBloc {
 
   Future<bool> hasRequiredInfo() async {
     final profile = await profileRepo.get();
-    final res = [
-      profile.card,
-      profile.firstName,
-      profile.lastName
-    ].every((d) => (d?.toString() ?? '') != ''); // null or empty
+    final res = [profile.card, profile.firstName, profile.lastName]
+        .every((d) => (d?.toString() ?? '') != ''); // null or empty
 
     return res;
   }
 
   fetchProviders() async {
-    List<ProviderDetails> providers =
-        await providersRepo.getAvailable();
+    List<ProviderDetails> providers = await providersRepo.getAvailable();
 
     _availableProviderNamesFetcher.sink.add(providers);
   }
@@ -40,18 +37,19 @@ class CardLoaderBloc {
   }
 
   loadToProvider(String providerName, int sum) async {
-    final providerLoader =
-        await providersRepo.createLoader(providerName);
+    final profile = await profileRepo.get();
+    final providerLoader = await providersRepo.createLoader(providerName);
+
     if (providerLoader == null) {
       // todo: throw
     } else {
-      final profile = await profileRepo.get();
-      try {
-        await cardLoader.loadToProvider(providerLoader, profile, sum);
-      } catch (e) {
-        print('error loading to provider $providerName');
-        print(e);
-      }
+      await cardLoader.loadToProvider(providerLoader, profile, sum);
+      await updateBudget(profile, sum);
     }
+  }
+
+  updateBudget(Profile profile, int sum) async {
+    profile.budget.state.used += sum;
+    await profileRepo.set(profile);
   }
 }
