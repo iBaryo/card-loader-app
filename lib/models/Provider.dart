@@ -6,29 +6,32 @@ import 'package:flutter/material.dart';
 abstract class ProviderProfileData {}
 
 class ProviderDetails {
-  String name;
-  String desc;
-  IconData icon;
-  String image;
-  MaterialColor color;
-  List<String> requiredFields;
+  final bool isActive;
+  final String name;
+  final String desc;
+  final IconData icon;
+  final String image;
+  final MaterialColor color;
+  final List<String> requiredFields;
 
-  ProviderDetails(this.name, this.desc, this.icon, this.image, this.color,
-      this.requiredFields);
+  ProviderDetails(this.isActive, this.name, this.desc, this.icon, this.image,
+      this.color, this.requiredFields);
 }
 
 class Provider<T extends ProviderProfileData> extends ProviderDetails {
-  ProviderLoader Function(T providerProfileData) createLoader;
+  final ProviderLoader Function(T providerProfileData) createLoader;
 
   Provider(
-      {String name,
+      {bool isActive,
+      String name,
       String desc,
       IconData icon,
       String image,
       MaterialColor color,
       List<String> requiredFields,
       this.createLoader})
-      : super(name, desc, icon, image, color, requiredFields);
+      : super(isActive ?? true, name, desc, icon, image, color,
+            requiredFields ?? []);
 }
 
 class ProviderLoader {
@@ -53,8 +56,10 @@ class ProviderLoader {
 }
 
 abstract class ProviderRequest {
-  String url;
+  final String url;
+
   ProviderRequest(this.url);
+
   Future<String> send();
 }
 

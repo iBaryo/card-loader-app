@@ -13,20 +13,25 @@ class SettingsBloc {
   SettingsBloc({this.providersRepo, this.profileRepo, this.notificationRepo});
 
   Future<List<ProviderAvailability>> getProviders() async {
-    final available = await providersRepo.getAvailable();
+    final configured = await providersRepo.getConfigured();
     return providersRepo
         .getAll()
         .map((provider) => ProviderAvailability(
-            isConfigured: available.contains(provider), details: provider))
+            isActive: provider.isActive,
+            noSetup: provider.requiredFields.length == 0,
+            isConfigured: configured.contains(provider) || provider.requiredFields.length == 0,
+            details: provider))
         .toList();
   }
 }
 
 class ProviderAvailability {
+  bool isActive;
+  bool noSetup;
   bool isConfigured;
   ProviderDetails details;
 
-  ProviderAvailability({this.isConfigured, this.details});
+  ProviderAvailability({this.isActive, this.noSetup, this.isConfigured, this.details});
 }
 
 class Settings {

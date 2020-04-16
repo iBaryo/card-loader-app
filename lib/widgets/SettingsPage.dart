@@ -4,10 +4,11 @@ import 'package:flutter/material.dart';
 
 class SettingsPage extends StatelessWidget {
   SettingsBloc bloc;
-  Future Function(BuildContext context,
-      String routeName, {
-      Object arguments,
-      }) navigate;
+  Future Function(
+    BuildContext context,
+    String routeName, {
+    Object arguments,
+  }) navigate;
 
   SettingsPage({this.bloc, this.navigate = Navigator.pushNamed});
 
@@ -51,8 +52,8 @@ class SettingsPage extends StatelessWidget {
             } else if (!snapshot.hasData) {
               return Center(child: CircularProgressIndicator());
             } else {
-              final providerCards =
-              snapshot.data.map((provider) => buildProvider(context, provider))
+              final providerCards = snapshot.data
+                  .map((provider) => buildProvider(context, provider))
                   .toList();
 
               return Column(
@@ -71,25 +72,31 @@ class SettingsPage extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           ListTile(
-            leading: Icon(
-              provider.details.icon,
-              size: 50,
-            ),
-            title: Text(provider.details.name),
-            subtitle: Text(provider.details.desc),
-          ),
+              leading: Icon(
+                provider.details.icon,
+                size: 50,
+              ),
+              title: Text(provider.details.name),
+              subtitle: Text(provider.details.desc),
+              trailing: Visibility(
+                  visible: provider.isActive,
+                  child: provider.isConfigured
+                      ? Icon(Icons.assignment_turned_in, color: Colors.green, size: 30)
+                      : Icon(Icons.timelapse, color: Colors.grey, size: 30))),
           ButtonBar(children: buildProviderButtons(context, provider)),
         ],
       ),
     );
   }
 
-  List<Widget> buildProviderButtons(BuildContext context,
-      ProviderAvailability provider) {
-    if (!provider.isConfigured) {
-      return <Widget>[
+  List<Widget> buildProviderButtons(
+      BuildContext context, ProviderAvailability provider) {
+    if (!provider.isActive) {
+      return [Text('Coming soon...')];
+    } else if (provider.noSetup || !provider.isConfigured) {
+      return [
         FlatButton(
-          child: const Text('DETAILS & SETUP'),
+          child: const Text('DETAILS'),
           onPressed: () async {
             navigate(context, 'provider', arguments: provider.details);
           },

@@ -27,7 +27,7 @@ class CardLoaderBloc {
   }
 
   fetchProviders() async {
-    List<ProviderDetails> providers = await providersRepo.getAvailable();
+    List<ProviderDetails> providers = await providersRepo.getConfigured();
 
     _availableProviderNamesFetcher.sink.add(providers);
   }

@@ -29,9 +29,9 @@ class ProvidersRepo {
 
   List<Provider> getAll() => _providers.values.toList();
 
-  Future<List<Provider>> getAvailable() async {
-    final availableProviders = await _getProvidersData();
-    return availableProviders.keys.toList()
+  Future<List<Provider>> getConfigured() async {
+    final configuredProviders = await _getProvidersData();
+    return configuredProviders.keys.toList()
           .map((provName) => _providers[provName])
           .toList();
   }
