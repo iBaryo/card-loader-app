@@ -1,22 +1,22 @@
 import 'Budget.dart';
 
 class Profile {
-  String firstName;
-  String lastName;
-  Card card;
+  CompanyCard card;
   Budget budget;
 
-  Profile(this.firstName, this.lastName, this.card, this.budget);
+  Profile(this.card, this.budget);
   Profile.empty() {
-    firstName = '';
-    lastName = '';
-    card = Card('');
+    card = CompanyCard('','','');
     budget = Budget.empty();
   }
 }
 
-class Card {
+class CompanyCard {
+  String firstName;
+  String lastName;
   String number = '';
 
-  Card(this.number);
+  CompanyCard(this.firstName, this.lastName, this.number);
+
+  bool isActive() => firstName != '' && lastName != '' && number != '';
 }

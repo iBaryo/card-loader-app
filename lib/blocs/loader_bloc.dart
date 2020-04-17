@@ -19,15 +19,11 @@ class CardLoaderBloc {
   CardLoaderBloc({this.profileRepo, this.providersRepo, this.cardLoader});
 
   Future<bool> hasRequiredInfo() async {
-    final profile = await profileRepo.get();
-    final res = [profile.card, profile.firstName, profile.lastName]
-        .every((d) => (d?.toString() ?? '') != ''); // null or empty
-
-    return res;
+    return true;
   }
 
   fetchProviders() async {
-    List<ProviderDetails> providers = await providersRepo.getConfigured();
+    List<ProviderDetails> providers = await providersRepo.getAvailable();
 
     _availableProviderNamesFetcher.sink.add(providers);
   }

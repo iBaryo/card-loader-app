@@ -9,9 +9,11 @@ class NotificationsService {
   NotificationsService() {
     _plugin = LocalNoti.FlutterLocalNotificationsPlugin();
 
+    debugPrint('init local notifications plugin...');
     _plugin.initialize(LocalNoti.InitializationSettings(
         LocalNoti.AndroidInitializationSettings('app_icon'),
         LocalNoti.IOSInitializationSettings()));
+    debugPrint('done init local notifications plugin');
   }
 
   show(Notification notification) async {

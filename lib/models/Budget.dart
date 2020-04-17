@@ -80,6 +80,8 @@ class BudgetSettings {
   BudgetSettings.empty();
 
   BudgetSettings(this.limit, this.frequency);
+
+  bool isConfigured() => limit > 0;
 }
 
 enum BudgetFrequency { DAILY, WEEKLY, MONTHLY }

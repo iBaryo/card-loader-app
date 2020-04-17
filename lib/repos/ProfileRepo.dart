@@ -10,7 +10,7 @@ class ProfileRepo {
   ProfileRepo({this.storage});
 
   Future<Profile> get() {
-      return _loadProfile();
+    return _loadProfile();
   }
 
   Future<Profile> _loadProfile() async {
@@ -25,9 +25,10 @@ class ProfileRepo {
           bState = budget['state'];
 
       return Profile(
-          profileJson['firstName'],
-          profileJson['lastName'],
-          Card(card['number']),
+          CompanyCard(
+              card['firstName'],
+              card['lastName'],
+              card['number']),
           Budget(
               BudgetSettings(bSettings['limit'],
                   BudgetFrequency.values[bSettings['frequency']]),
@@ -40,12 +41,14 @@ class ProfileRepo {
   }
 
   set(Profile profile) async {
+    var card = profile.card;
     var budget = profile.budget;
 
     storage.set(STORAGE_KEY, {
-      'firstName': profile.firstName,
-      'lastName': profile.lastName,
-      'card': {'number': profile.card.number},
+      'card': {
+        'firstName': card.firstName,
+        'lastName': card.lastName,
+        'number': card.number},
       'budget': {
         'settings': {
           'limit': budget.settings.limit,

@@ -8,7 +8,6 @@ class ProvidersRepo {
   Future<dynamic> _providerDataFuture;
   Map<String, ProviderProfileData> _providersData;
 
-
   ProvidersRepo({this.storage, List<Provider> providers})
       : _providers = Map<String, Provider>.fromIterable(providers,
             key: (provider) => provider.name, value: (provider) => provider),
@@ -27,32 +26,51 @@ class ProvidersRepo {
     }
 
     return _providers[providerName].createLoader(providersData[providerName]);
-
   }
-
 
   List<Provider> getAll() => _providers.values.toList();
 
-  Future<List<Provider>> getConfigured() async {
-    final configuredProviders = await _getProvidersData();
-    return configuredProviders.keys.toList()
-          .map((provName) => _providers[provName])
-          .toList();
+  Future<List<Provider>> getActive() async {
+    return _providers.values.where((provider) => provider.isActive).toList();
   }
 
-  Future<T> getProviderData<T extends ProviderProfileData>(String providerName) async {
+  Future<List<Provider>> getConfigured() async {
+    final configuredProviders = await _getProvidersData();
+    return configuredProviders.keys
+        .toList()
+        .map((provName) => _providers[provName])
+        .toList();
+  }
+
+  Future<List<Provider>> getWithNoSetup() async {
+    return _providers.values
+        .where((provider) => provider.requiredFields.length == 0)
+        .toList();
+  }
+
+  Future<List<Provider>> getAvailable() async {
+    final available = await Future.wait([getConfigured(), getWithNoSetup()]);
+    return available
+        .expand((providers) => providers)
+        .toSet()
+        .where((provider) => provider.isActive)
+        .toList();
+  }
+
+  Future<T> getProviderData<T extends ProviderProfileData>(
+      String providerName) async {
     final providers = await _getProvidersData();
     if (!providers.containsKey(providerName)) {
       return null;
-    }
-    else {
+    } else {
       return providers[providerName];
     }
   }
 
   Future<Map<String, ProviderProfileData>> _getProvidersData() async {
     if (_providersData == null) {
-      _providersData = (await _providerDataFuture) ?? Map<String, ProviderProfileData>();
+      _providersData =
+          (await _providerDataFuture) ?? Map<String, ProviderProfileData>();
     }
     return _providersData;
   }

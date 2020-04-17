@@ -26,7 +26,10 @@ class ProvidersListPage extends StatelessWidget {
             stream: bloc.availableProviders$,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                return buildList(snapshot.data as List<ProviderDetails>);
+                return Padding(
+                  padding: EdgeInsets.only(top: 10.0),
+                  child: buildList(snapshot.data as List<ProviderDetails>),
+                );
               } else if (snapshot.hasError) {
                 return buildError(snapshot.error);
               } else {
@@ -43,10 +46,39 @@ class ProvidersListPage extends StatelessWidget {
     if (providers.length == 0) {
       return buildMessage('No configured providers');
     } else {
-      return Text(
-        'LIST',
+      return Column(
+        children: providers.map((provider) => buildProvider(provider)).toList()
       );
     }
+  }
+
+  Widget buildProvider(ProviderDetails provider) {
+    return Card(
+      child: Column(
+//        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          ListTile(
+              leading: Container(
+                  width: 70,
+                  height: 70,
+                  decoration: new BoxDecoration(
+                    image: new DecorationImage(
+                      image: new AssetImage(
+                          provider.icon
+                      ),
+                      fit: BoxFit.cover,
+                    ),
+                  )),
+              title: Text(provider.name),
+//              subtitle: Text(provider.desc),
+//            trailing: ,
+          ),
+//          ButtonBar(children: [
+//
+//          ]),
+        ],
+      ),
+    );
   }
 
   Widget buildError(Object error) {
