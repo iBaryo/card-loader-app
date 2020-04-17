@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 
 class ProviderDestination extends Destination {
   ProviderDestination(ProviderDetails provider)
-      : super(PageDetails(provider.name, provider.color), (ioc) => ProviderPage(provider));
+      : super(PageDetails(provider.name, provider.color),
+            (ioc) => ProviderPage(provider));
 }
 
 class ProviderPage extends StatelessWidget {
@@ -18,11 +19,16 @@ class ProviderPage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         SizedBox(height: 120.0),
-        Icon(
-          provider.icon,
-          color: Colors.white,
-          size: 40.0,
-        ),
+        Container(
+//                  padding: EdgeInsets.only(left: 10.0),
+            width: 60,
+            height: 60,
+            decoration: new BoxDecoration(
+              image: new DecorationImage(
+                image: new AssetImage(provider.icon),
+                fit: BoxFit.cover,
+              ),
+            )),
         Container(
           width: 90.0,
           child: new Divider(color: Colors.green),
@@ -69,7 +75,7 @@ class ProviderPage extends StatelessWidget {
           onPressed: () => {},
           color: Color.fromRGBO(58, 66, 86, 1.0),
           child:
-          Text("TAKE THIS LESSON", style: TextStyle(color: Colors.white)),
+              Text("Load credit", style: TextStyle(color: Colors.white)),
         ));
     final bottomContent = Container(
       // height: MediaQuery.of(context).size.height,

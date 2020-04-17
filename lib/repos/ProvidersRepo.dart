@@ -4,11 +4,15 @@ import 'package:card_loader/services/Storage.dart';
 class ProvidersRepo {
   Storage storage;
   Map<String, Provider> _providers;
+
+  Future<dynamic> _providerDataFuture;
   Map<String, ProviderProfileData> _providersData;
+
 
   ProvidersRepo({this.storage, List<Provider> providers})
       : _providers = Map<String, Provider>.fromIterable(providers,
-            key: (provider) => provider.name, value: (provider) => provider);
+            key: (provider) => provider.name, value: (provider) => provider),
+        _providerDataFuture = storage.get('providers');
 
   Future<ProviderLoader> createLoader(String providerName) async {
     if (!_providers.containsKey(providerName)) {
@@ -48,8 +52,7 @@ class ProvidersRepo {
 
   Future<Map<String, ProviderProfileData>> _getProvidersData() async {
     if (_providersData == null) {
-      print('loading configured providers');
-      _providersData = (await storage.get('providers')) ?? Map<String, ProviderProfileData>();
+      _providersData = (await _providerDataFuture) ?? Map<String, ProviderProfileData>();
     }
     return _providersData;
   }

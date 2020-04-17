@@ -6,8 +6,8 @@ List<Provider> defineProviders() {
   return [
     Provider(
         name: 'Wolt',
-        desc: 'Food delieveries',
-        icon: Icons.traffic,
+        desc: 'Delieveries from different restraunts',
+        icon: 'assets/wolt/icon.jpg',
         image: 'veggies.jpg',
         color: Colors.blue,
         createLoader: (providerProfileData) {
@@ -21,8 +21,8 @@ List<Provider> defineProviders() {
     Provider(
 //        isEnabled: false,
         name: 'Teva-Castel',
-        desc: 'pricey place with quality stuff',
-        icon: Icons.nature,
+        desc: 'Pricey place with quality stuff',
+        icon: 'assets/teva/icon.png',
         image: 'veggies.jpg',
         color: Colors.green,
         requiredFields: ['code'],
@@ -36,9 +36,9 @@ List<Provider> defineProviders() {
     Provider(
         isActive: false,
         name: 'Segev-Express',
-        desc: 'meaty meat',
-        icon: Icons.fastfood,
-        image: 'segev.jpg',
+        desc: 'Fast food fun',
+        icon: 'assets/segev/icon.png',
+        image: 'veggies.jpg',
         color: Colors.grey,
         requiredFields: ['bla'],
         createLoader: (providerProfileData) {
@@ -51,9 +51,9 @@ List<Provider> defineProviders() {
     Provider(
         isActive: false,
         name: 'Shufersal',
-        desc: 'groceries',
-        icon: Icons.shopping_cart,
-        image: 'segev.jpg',
+        desc: 'Groceries',
+        icon: 'assets/shufersal/icon.png',
+        image: 'veggies.jpg',
         color: Colors.red,
         createLoader: (providerProfileData) {
           return ProviderLoader(createRequest: (profile, sum) {
@@ -65,9 +65,9 @@ List<Provider> defineProviders() {
     Provider(
         isActive: false,
         name: 'Victory',
-        desc: 'groceries',
-        icon: Icons.shopping_cart,
-        image: 'segev.jpg',
+        desc: 'Groceries',
+        icon: 'assets/victory/icon.png',
+        image: 'veggies.jpg',
         color: Colors.red,
         createLoader: (providerProfileData) {
           return ProviderLoader(createRequest: (profile, sum) {
@@ -79,9 +79,9 @@ List<Provider> defineProviders() {
     Provider(
         isActive: false,
         name: 'Shookit',
-        desc: 'vegetables',
-        icon: Icons.streetview,
-        image: 'segev.jpg',
+        desc: 'Vegetables',
+        icon: 'assets/shookit/icon.png',
+        image: 'veggies.jpg',
         color: Colors.red,
         createLoader: (providerProfileData) {
           return ProviderLoader(createRequest: (profile, sum) {
@@ -93,9 +93,9 @@ List<Provider> defineProviders() {
     Provider(
         isActive: false,
         name: 'Super Yuda',
-        desc: 'groceries',
-        icon: Icons.shopping_cart,
-        image: 'segev.jpg',
+        desc: 'Groceries',
+        icon: 'assets/yuda/icon.jpg',
+        image: 'veggies.jpg',
         color: Colors.red,
         createLoader: (providerProfileData) {
           return ProviderLoader(createRequest: (profile, sum) {

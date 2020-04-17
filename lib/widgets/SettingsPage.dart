@@ -52,12 +52,10 @@ class SettingsPage extends StatelessWidget {
             } else if (!snapshot.hasData) {
               return Center(child: CircularProgressIndicator());
             } else {
-              final providerCards = snapshot.data
-                  .map((provider) => buildProvider(context, provider))
-                  .toList();
-
               return Column(
-                children: providerCards,
+                  children: snapshot.data
+                      .map((provider) => buildProvider(context, provider))
+                      .toList()
               );
             }
           },
@@ -72,16 +70,24 @@ class SettingsPage extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           ListTile(
-              leading: Icon(
-                provider.details.icon,
-                size: 50,
-              ),
+              leading: Container(
+                  width: 60,
+                  height: 60,
+                  decoration: new BoxDecoration(
+                    image: new DecorationImage(
+                      image: new AssetImage(
+                          provider.details.icon
+                      ),
+                      fit: BoxFit.cover,
+                    ),
+                  )),
               title: Text(provider.details.name),
               subtitle: Text(provider.details.desc),
               trailing: Visibility(
                   visible: provider.isActive,
                   child: provider.isConfigured
-                      ? Icon(Icons.assignment_turned_in, color: Colors.green, size: 30)
+                      ? Icon(Icons.assignment_turned_in,
+                          color: Colors.green, size: 30)
                       : Icon(Icons.timelapse, color: Colors.grey, size: 30))),
           ButtonBar(children: buildProviderButtons(context, provider)),
         ],

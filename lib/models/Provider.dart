@@ -9,7 +9,7 @@ class ProviderDetails {
   final bool isActive;
   final String name;
   final String desc;
-  final IconData icon;
+  final String icon;
   final String image;
   final MaterialColor color;
   final List<String> requiredFields;
@@ -25,7 +25,7 @@ class Provider<T extends ProviderProfileData> extends ProviderDetails {
       {bool isActive,
       String name,
       String desc,
-      IconData icon,
+      String icon,
       String image,
       MaterialColor color,
       List<String> requiredFields,

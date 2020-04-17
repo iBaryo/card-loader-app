@@ -51,8 +51,15 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/wolt/icon.jpg
+    - assets/teva/icon.png
+    - assets/segev/icon.png
+    - assets/segev/image.jpg
+    - assets/victory/icon.png
+    - assets/yuda/icon.jpg
+    - assets/shufersal/icon.png
+    - assets/shookit/icon.png
     - veggies.jpg
-    - segev.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
