@@ -22,10 +22,15 @@ class Storage {
   set(String key, dynamic data) async {
     var prefs = await SharedPreferences.getInstance();
     if (data == null) {
-      prefs.remove(key);
+      return prefs.remove(key);
     } else {
       var stringify = jsonEncode(data);
-      prefs.setString(key, stringify);
+      return prefs.setString(key, stringify);
     }
+  }
+
+  clear(String key) async {
+    var prefs = await SharedPreferences.getInstance();
+    return prefs.remove(key);
   }
 }

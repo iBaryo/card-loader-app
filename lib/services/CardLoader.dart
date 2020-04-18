@@ -1,11 +1,11 @@
-import 'package:card_loader/models/Profile.dart';
+import 'package:card_loader/models/CompanyCard.dart';
 import 'package:card_loader/models/Provider.dart';
 
 class CardLoader {
   Future<ProviderResponse> loadToProvider(
-      ProviderLoader loader, Profile profile, int sum) async {
+      ProviderLoader loader, int sum, CompanyCard card) async {
     print('creating the request...');
-    final provReq = loader.createRequest(profile, sum);
+    final provReq = loader.createRequest(card, sum);
     print('sending the request...');
     var rawRes = await provReq.send();
     print('parsing response...');

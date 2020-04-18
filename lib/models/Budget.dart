@@ -1,17 +1,22 @@
-class Budget {
+import 'package:card_loader/models/IActive.dart';
+
+class Budget implements IActive {
   static const WORKDAYS_PER_WEEK = DateTime.daysPerWeek - 2;
 
   BudgetSettings settings;
   BudgetState state;
 
-  Budget(this.settings, this.state) {
+  Budget({this.settings, this.state}) {
     validateState();
   }
 
   Budget.empty() {
     settings = BudgetSettings.empty();
-    state = BudgetState.empty();
+    resetState();
   }
+
+  @override
+  bool isActive() => settings.isActive();
 
   bool any() {
     return settings.limit > state.used;
@@ -36,8 +41,12 @@ class Budget {
 
   validateState() {
     if (shouldResetState()) {
-      state = BudgetState.empty();
+      resetState();
     }
+  }
+
+  resetState() {
+    state = BudgetState.empty();
   }
 
   bool shouldResetState() {
@@ -73,7 +82,7 @@ class BudgetState {
   }
 }
 
-class BudgetSettings {
+class BudgetSettings with IActive {
   double limit = 0;
   BudgetFrequency frequency = BudgetFrequency.DAILY;
 
@@ -81,7 +90,7 @@ class BudgetSettings {
 
   BudgetSettings(this.limit, this.frequency);
 
-  bool isConfigured() => limit > 0;
+  bool isActive() => limit > 0;
 }
 
 enum BudgetFrequency { DAILY, WEEKLY, MONTHLY }

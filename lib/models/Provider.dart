@@ -1,6 +1,4 @@
-import 'dart:io';
-
-import 'package:card_loader/models/Profile.dart';
+import 'package:card_loader/models/CompanyCard.dart';
 import 'package:flutter/material.dart';
 
 abstract class ProviderProfileData {}
@@ -35,7 +33,7 @@ class Provider<T extends ProviderProfileData> extends ProviderDetails {
 }
 
 class ProviderLoader {
-  ProviderRequest Function(Profile profile, int sum) createRequest;
+  ProviderRequest Function(CompanyCard card, int sum) createRequest;
   ProviderResponse Function(String rawResponse) parseResponse;
 
   ProviderLoader({this.createRequest, this.parseResponse});

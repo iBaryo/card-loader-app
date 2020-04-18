@@ -2,8 +2,9 @@ import 'package:card_loader/blocs/loader_bloc.dart';
 import 'package:card_loader/blocs/provider_bloc.dart';
 import 'package:card_loader/blocs/settings_bloc.dart';
 import 'package:card_loader/providers.dart';
+import 'package:card_loader/repos/BudgetRepo.dart';
 import 'package:card_loader/repos/ReminderRepo.dart';
-import 'package:card_loader/repos/ProfileRepo.dart';
+import 'package:card_loader/repos/CardRepo.dart';
 import 'package:card_loader/repos/ProvidersRepo.dart';
 import 'package:card_loader/routes.dart';
 import 'package:card_loader/services/CardLoader.dart';
@@ -15,6 +16,9 @@ import 'package:card_loader/widgets/HomePage.dart';
 import 'package:card_loader/widgets/ProfilePage.dart';
 import 'package:card_loader/widgets/ProvidersListPage.dart';
 import 'package:card_loader/widgets/SettingsPage.dart';
+import 'package:card_loader/widgets/profile/BudgetPanel.dart';
+import 'package:card_loader/widgets/profile/CardPanel.dart';
+import 'package:card_loader/widgets/profile/ReminderPanel.dart';
 import 'package:ioc/ioc.dart';
 
 const ROUTES = 'routes';
@@ -55,14 +59,21 @@ Ioc setupIoc() {
         storage: ioc.use(MemoryStorage), providers: defineProviders());
   }, singleton: true);
 
-  ioc.bind(ProfileRepo, (ioc) {
-    print('init profile repo...');
-    return ProfileRepo(storage: ioc.use(Storage));
+  ioc.bind(CardRepo, (ioc) {
+    print('init card repo...');
+    return CardRepo(storage: ioc.use(Storage));
+  }, singleton: true);
+
+  ioc.bind(BudgetRepo, (ioc) {
+    print('init budget repo...');
+    return BudgetRepo(storage: ioc.use(Storage));
   }, singleton: true);
 
   ioc.bind(ReminderRepo, (ioc) {
     print('init notifications repo...');
-    return ReminderRepo(ioc.use(Storage), ioc.use(NotificationsService));
+    return ReminderRepo(
+        storage: ioc.use(Storage),
+        notifications: ioc.use(NotificationsService));
   }, singleton: true, lazy: true);
 
   //#endregion
@@ -75,7 +86,7 @@ Ioc setupIoc() {
   ioc.bind(
       SettingsBloc,
       (ioc) => SettingsBloc(
-          profileRepo: ioc.use(ProfileRepo),
+          profileRepo: ioc.use(CardRepo),
           providersRepo: ioc.use(ProvidersRepo),
           notificationRepo: ioc.use(ReminderRepo)),
       singleton: true,
@@ -84,7 +95,7 @@ Ioc setupIoc() {
   ioc.bind(
       CardLoaderBloc,
       (ioc) => CardLoaderBloc(
-          profileRepo: ioc.use(ProfileRepo),
+          cardRepo: ioc.use(CardRepo),
           providersRepo: ioc.use(ProvidersRepo),
           cardLoader: ioc.use(CardLoader)),
       singleton: true);
@@ -110,8 +121,17 @@ Ioc setupIoc() {
   ioc.bind(SettingsPage, (ioc) => SettingsPage(bloc: ioc.use(SettingsBloc)),
       lazy: true);
 
-  ioc.bind(ProfilePage,
-      (ioc) => ProfilePage(ioc.use(ProfileRepo), ioc.use(ReminderRepo)),
+  ioc.bind(ReminderPanel, (ioc) => ReminderPanel(ioc.use(ReminderRepo)));
+  ioc.bind(BudgetPanel, (ioc) => BudgetPanel(ioc.use(BudgetRepo)));
+  ioc.bind(CardPanel, (ioc) => CardPanel(ioc.use(CardRepo)));
+
+  ioc.bind(
+      ProfilePage,
+      (ioc) => ProfilePage(
+            reminderPanel: ioc.use(ReminderPanel),
+            budgetPanel: ioc.use(BudgetPanel),
+            cardPanel: ioc.use(CardPanel),
+          ),
       lazy: true);
   //#endregion
 

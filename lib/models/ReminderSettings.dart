@@ -1,8 +1,9 @@
 import 'dart:math';
 
+import 'package:card_loader/models/IActive.dart';
 import 'package:flutter/material.dart';
 
-class ReminderSettings {
+class ReminderSettings implements IActive {
   int rawDays;
   TimeOfDay time;
 
@@ -12,9 +13,7 @@ class ReminderSettings {
     reset();
   }
 
-  bool isActive() {
-    return rawDays != 0;
-  }
+  bool isActive() => rawDays != 0;
 
   void reset() {
     time = TimeOfDay(hour: 0, minute: 0);
