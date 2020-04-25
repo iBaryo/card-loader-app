@@ -34,21 +34,19 @@ class CardLoaderBloc {
     _availableProviderNamesFetcher.close();
   }
 
-  loadToProvider(String providerName, int sum) async {
+  loadToProvider(ProviderDetails provider, int sum) async {
     final card = await cardRepo.get();
-    final providerLoader = await providersRepo.createLoader(providerName);
-
-    if (providerLoader == null) {
-      // todo: throw
-    } else {
-      await cardLoader.loadToProvider(providerLoader, sum, card);
-      await updateBudget(sum);
-    }
+    final providerLoader = await providersRepo.createLoader(provider);
+    await cardLoader.loadToProvider(providerLoader, sum, card);
+    await updateBudget(sum);
   }
 
   updateBudget(int sum) async {
+    if (sum == 0) return;
     final budget = await budgetRepo.get();
     budget.state.used += sum;
     await budgetRepo.set(budget);
   }
+
+  hasBudgetManagement() => budgetRepo.get().then((budget) => budget.isActive());
 }

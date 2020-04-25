@@ -17,7 +17,7 @@ class ProviderDetails {
 }
 
 class Provider<T extends ProviderProfileData> extends ProviderDetails {
-  final ProviderLoader Function(T providerProfileData) createLoader;
+  final ProviderLoader Function({T providerProfileData}) createLoader;
 
   Provider(
       {bool isActive,

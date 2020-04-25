@@ -10,7 +10,7 @@ List<Provider> defineProviders() {
         icon: 'assets/wolt/icon.jpg',
         image: 'veggies.jpg',
         color: Colors.blue,
-        createLoader: (providerProfileData) {
+        createLoader: ({providerProfileData}) {
           return ProviderLoader(
               createRequest: (profile, sum) => ProviderAppRequest(
                   'https://wolt.com/en/isr/tel-aviv/restaurant/woltilgiftcards'),
@@ -26,7 +26,7 @@ List<Provider> defineProviders() {
         image: 'veggies.jpg',
         color: Colors.green,
         requiredFields: ['code'],
-        createLoader: (providerProfileData) {
+        createLoader: ({providerProfileData}) {
           return ProviderLoader(createRequest: (profile, sum) {
             return null;
           }, parseResponse: (rawResponse) {
@@ -41,7 +41,7 @@ List<Provider> defineProviders() {
         image: 'veggies.jpg',
         color: Colors.grey,
         requiredFields: ['bla'],
-        createLoader: (providerProfileData) {
+        createLoader: ({providerProfileData}) {
           return ProviderLoader(createRequest: (profile, sum) {
             return null;
           }, parseResponse: (rawResponse) {
@@ -55,7 +55,7 @@ List<Provider> defineProviders() {
         icon: 'assets/shufersal/icon.png',
         image: 'veggies.jpg',
         color: Colors.red,
-        createLoader: (providerProfileData) {
+        createLoader: ({providerProfileData}) {
           return ProviderLoader(createRequest: (profile, sum) {
             return null;
           }, parseResponse: (rawResponse) {
@@ -69,7 +69,7 @@ List<Provider> defineProviders() {
         icon: 'assets/victory/icon.png',
         image: 'veggies.jpg',
         color: Colors.red,
-        createLoader: (providerProfileData) {
+        createLoader: ({providerProfileData}) {
           return ProviderLoader(createRequest: (profile, sum) {
             return null;
           }, parseResponse: (rawResponse) {
@@ -83,7 +83,7 @@ List<Provider> defineProviders() {
         icon: 'assets/shookit/icon.png',
         image: 'veggies.jpg',
         color: Colors.red,
-        createLoader: (providerProfileData) {
+        createLoader: ({providerProfileData}) {
           return ProviderLoader(createRequest: (profile, sum) {
             return null;
           }, parseResponse: (rawResponse) {
@@ -97,7 +97,7 @@ List<Provider> defineProviders() {
         icon: 'assets/yuda/icon.jpg',
         image: 'veggies.jpg',
         color: Colors.red,
-        createLoader: (providerProfileData) {
+        createLoader: ({providerProfileData}) {
           return ProviderLoader(createRequest: (profile, sum) {
             return null;
           }, parseResponse: (rawResponse) {

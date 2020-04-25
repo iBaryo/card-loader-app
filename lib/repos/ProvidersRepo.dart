@@ -13,19 +13,20 @@ class ProvidersRepo {
             key: (provider) => provider.name, value: (provider) => provider),
         _providerDataFuture = storage.get('providers');
 
-  Future<ProviderLoader> createLoader(String providerName) async {
-    if (!_providers.containsKey(providerName)) {
-      // unsupported provider.
-      return null;
+  Future<ProviderLoader> createLoader(ProviderDetails provider) async {
+    if (!_providers.containsKey(provider.name)) {
+      throw 'Unsupported Provider: ${provider.name ?? '<null>'}';
     }
 
-    final providersData = await _getProvidersData();
-    if (!providersData.containsKey(providerName)) {
-      // provider with no setup.
-      return null;
+    if (provider.requiredFields.length > 0) {
+//      final providersData = await _getProvidersData();
+//      if (!providersData.containsKey(providerName)) {
+//        // provider with no setup.
+//        return null;
+//      }
     }
 
-    return _providers[providerName].createLoader(providersData[providerName]);
+    return _providers[provider.name].createLoader();
   }
 
   List<Provider> getAll() => _providers.values.toList();

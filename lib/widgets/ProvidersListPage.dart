@@ -60,7 +60,7 @@ class ProvidersListPage extends StatelessWidget {
           ListTile(
               leading: Container(
                   width: 70,
-                  height: 70,
+                  height: 100,
                   decoration: new BoxDecoration(
                     image: new DecorationImage(
                       image: new AssetImage(
@@ -68,8 +68,11 @@ class ProvidersListPage extends StatelessWidget {
                       ),
                       fit: BoxFit.cover,
                     ),
-                  )),
+                  ),
+              ),
               title: Text(provider.name),
+              onTap: () => bloc.loadToProvider(provider, 0),
+
 //              subtitle: Text(provider.desc),
 //            trailing: ,
           ),
