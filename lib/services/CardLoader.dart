@@ -7,7 +7,7 @@ class CardLoader {
     print('creating the request...');
     final provReq = loader.createRequest(card, sum);
     print('sending the request...');
-    var rawRes = await provReq.send();
+    final rawRes = await provReq.send();
     print('parsing response...');
     return loader.parseResponse(rawRes);
   }

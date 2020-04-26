@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:card_loader/models/CompanyCard.dart';
 import 'package:flutter/material.dart';
 
@@ -34,7 +36,8 @@ class Provider<T extends ProviderProfileData> extends ProviderDetails {
 
 class ProviderLoader {
   ProviderRequest Function(CompanyCard card, int sum) createRequest;
-  ProviderResponse Function(String rawResponse) parseResponse;
+  ProviderResponse Function(String rawResponse) parseResponse =
+      (rawRes) => ProviderResponse.parse(jsonDecode(rawRes));
 
   ProviderLoader({this.createRequest, this.parseResponse});
 //  String url;
@@ -61,4 +64,21 @@ abstract class ProviderRequest {
   Future<String> send();
 }
 
-class ProviderResponse {}
+class ProviderResponse {
+  final bool ok;
+  bool pendingResponse = false;
+  String error = '';
+
+  ProviderResponse(this.ok, {this.pendingResponse, this.error});
+
+  ProviderResponse.parse(dynamic raw)
+      : ok = raw['ok'],
+        pendingResponse = raw['pendingResponse'],
+        error = raw['error'];
+
+  toMap() => {
+        'ok': this.ok,
+        'pendingResponse': this.pendingResponse,
+        'error': this.error
+      };
+}

@@ -64,9 +64,9 @@ class NotificationsService {
 }
 
 class Notification {
-  String title;
-  String body;
+  final String title;
+  final String body;
   final String payload;
 
-  Notification(this.title, this.body) : payload = 'test';
+  Notification(this.title, this.body, {this.payload});
 }

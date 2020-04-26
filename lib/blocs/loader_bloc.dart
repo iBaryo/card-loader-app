@@ -3,13 +3,16 @@ import 'package:card_loader/repos/BudgetRepo.dart';
 import 'package:card_loader/repos/CardRepo.dart';
 import 'package:card_loader/repos/ProvidersRepo.dart';
 import 'package:card_loader/services/CardLoader.dart';
-import 'package:rxdart/rxdart.dart';
+import 'package:card_loader/services/NotificationHandler.dart';
+import 'package:card_loader/services/Notifications.dart';
+import 'package:rxdart/rxdart.dart' show PublishSubject;
 
 class CardLoaderBloc {
   final CardRepo cardRepo;
   final BudgetRepo budgetRepo;
   final ProvidersRepo providersRepo;
   final CardLoader cardLoader;
+  final NotificationsService notificationsService;
 
   final _availableProviderNamesFetcher =
       PublishSubject<List<ProviderDetails>>();
@@ -18,7 +21,11 @@ class CardLoaderBloc {
       _availableProviderNamesFetcher.stream;
 
   CardLoaderBloc(
-      {this.cardRepo, this.budgetRepo, this.providersRepo, this.cardLoader});
+      {this.cardRepo,
+      this.budgetRepo,
+      this.providersRepo,
+      this.cardLoader,
+      this.notificationsService});
 
   Future<bool> hasRequiredInfo() async {
     return true;
@@ -33,7 +40,6 @@ class CardLoaderBloc {
   dispose() {
     _availableProviderNamesFetcher.close();
   }
-
 
   loadDailyBudgetToDefaultProvider() async {
     final defaultProvider = await providersRepo.getDefault();
@@ -57,8 +63,12 @@ class CardLoaderBloc {
     try {
       final card = await cardRepo.get();
       final providerLoader = await providersRepo.createLoader(provider);
-      await cardLoader.loadToProvider(providerLoader, sum, card);
-      await updateBudget(sum);
+      final res = await cardLoader.loadToProvider(providerLoader, sum, card);
+      if (!res.ok) {
+        throw res.error;
+      } else {
+        await updateBudget(res.pendingResponse, sum);
+      }
       return true;
     } catch (e) {
       print('error loading to provider');
@@ -67,11 +77,19 @@ class CardLoaderBloc {
     }
   }
 
-  updateBudget(int sum) async {
+  updateBudget(bool isPending, int sum) async {
     if (sum == 0) return;
     final budget = await budgetRepo.get();
-    budget.state.used += sum;
-    await budgetRepo.set(budget);
+    if (!budget.isActive()) return;
+
+    if (isPending) {
+      await notificationsService.show(Notification(
+          'Update budget', 'When done using your credit, click here',
+          payload: NotificationType.UseBudget.toString()));
+    } else {
+      budget.state.used += sum;
+      await budgetRepo.set(budget);
+    }
   }
 
   hasBudgetManagement() => budgetRepo.get().then((budget) => budget.isActive());

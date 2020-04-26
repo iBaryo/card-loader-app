@@ -7,11 +7,7 @@ class ProviderAppRequest extends ProviderRequest {
   ProviderAppRequest(String url) : super(url);
 
   @override
-  Future<String> send() async {
-    if (await canLaunch(url)) {
-      return jsonEncode({'ok': await launch(url)});
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
+  Future<String> send() async => jsonEncode(await canLaunch(url)
+        ? ProviderResponse(await launch(url), pendingResponse: true).toMap()
+        : ProviderResponse(false, error: 'could not launch app').toMap());
 }
