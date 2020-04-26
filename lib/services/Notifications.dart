@@ -1,3 +1,4 @@
+import 'package:card_loader/services/NotificationHandler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart'
     as LocalNoti;
@@ -6,13 +7,17 @@ class NotificationsService {
   int _notiId = 1;
   LocalNoti.FlutterLocalNotificationsPlugin _plugin;
 
-  NotificationsService() {
+  NotificationsService(NotificationHandler handler) {
     _plugin = LocalNoti.FlutterLocalNotificationsPlugin();
 
     debugPrint('init local notifications plugin...');
-    _plugin.initialize(LocalNoti.InitializationSettings(
-        LocalNoti.AndroidInitializationSettings('app_icon'),
-        LocalNoti.IOSInitializationSettings()));
+    _plugin.initialize(
+        LocalNoti.InitializationSettings(
+            LocalNoti.AndroidInitializationSettings('app_icon'),
+            LocalNoti.IOSInitializationSettings()),
+        onSelectNotification: (payload) => handler.handle(NotificationType
+            .values
+            .firstWhere((type) => type.toString() == payload, orElse: null)));
     debugPrint('done init local notifications plugin');
   }
 
@@ -30,7 +35,8 @@ class NotificationsService {
       List<int> days, TimeOfDay time, Notification notification) {
     final platformChannelSpecifics = LocalNoti.NotificationDetails(
         LocalNoti.AndroidNotificationDetails(
-            'cardLoader', 'scheduled', 'schedule notifications'),
+            'cardLoader', 'scheduled', 'schedule notifications',
+            visibility: LocalNoti.NotificationVisibility.Public),
         LocalNoti.IOSNotificationDetails());
 
     return Future.wait(days.map(toLocalNotiDay).map((day) async {
@@ -40,7 +46,8 @@ class NotificationsService {
           notification.body,
           day,
           LocalNoti.Time(time.hour, time.minute),
-          platformChannelSpecifics);
+          platformChannelSpecifics,
+          payload: NotificationType.Load.toString());
 
       return _notiId;
     }));

@@ -58,6 +58,11 @@ class ProvidersRepo {
         .toList();
   }
 
+  Future<Provider> getDefault() async {
+    final available = await getAvailable();
+    return available[0];
+  }
+
   Future<T> getProviderData<T extends ProviderProfileData>(
       String providerName) async {
     final providers = await _getProvidersData();

@@ -9,6 +9,7 @@ import 'package:card_loader/repos/ProvidersRepo.dart';
 import 'package:card_loader/routes.dart';
 import 'package:card_loader/services/CardLoader.dart';
 import 'package:card_loader/services/MemoryStorage.dart';
+import 'package:card_loader/services/NotificationHandler.dart';
 import 'package:card_loader/services/Notifications.dart';
 import 'package:card_loader/services/Storage.dart';
 import 'package:card_loader/widgets/DestinationViewFactory.dart';
@@ -46,9 +47,11 @@ Ioc setupIoc() {
     return CardLoader();
   }, singleton: true);
 
+  ioc.bind(NotificationHandler, (ioc) => NotificationHandler(ioc.use(CardLoaderBloc)));
+
   ioc.bind(NotificationsService, (ioc) {
     print('init notifications service...');
-    return NotificationsService();
+    return NotificationsService(ioc.use(NotificationHandler));
   }, singleton: true, lazy: true);
   //#endregion
 

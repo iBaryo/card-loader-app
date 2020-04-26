@@ -34,11 +34,37 @@ class CardLoaderBloc {
     _availableProviderNamesFetcher.close();
   }
 
+
+  loadDailyBudgetToDefaultProvider() async {
+    final defaultProvider = await providersRepo.getDefault();
+    return await loadDailyBudgetToProvider(defaultProvider);
+  }
+
+  loadDailyBudgetToProvider(ProviderDetails provider) async {
+    int amount = 0;
+    final budget = await budgetRepo.get();
+    if (budget.isActive()) {
+      final daily = budget.daily();
+      if (!budget.enoughFor(daily)) {
+        return false;
+      }
+      amount = daily.floor();
+    }
+    return await loadToProvider(provider, amount);
+  }
+
   loadToProvider(ProviderDetails provider, int sum) async {
-    final card = await cardRepo.get();
-    final providerLoader = await providersRepo.createLoader(provider);
-    await cardLoader.loadToProvider(providerLoader, sum, card);
-    await updateBudget(sum);
+    try {
+      final card = await cardRepo.get();
+      final providerLoader = await providersRepo.createLoader(provider);
+      await cardLoader.loadToProvider(providerLoader, sum, card);
+      await updateBudget(sum);
+      return true;
+    } catch (e) {
+      print('error loading to provider');
+      print(e);
+      return false;
+    }
   }
 
   updateBudget(int sum) async {

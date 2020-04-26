@@ -18,9 +18,9 @@ class Budget implements IActive {
   @override
   bool isActive() => settings.isActive();
 
-  bool any() {
-    return settings.limit > state.used;
-  }
+  bool enoughFor(double amount) => settings.limit > state.used + amount;
+
+  bool any() => enoughFor(0);
 
   double daily() {
     int workDays;
