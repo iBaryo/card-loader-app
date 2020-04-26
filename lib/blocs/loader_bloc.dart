@@ -28,7 +28,7 @@ class CardLoaderBloc {
       this.notificationsService,
       NotificationHandler notiHandler}) {
     notiHandler.register(
-        NotificationType.UseBudget, () => loadDailyBudgetToDefaultProvider());
+        NotificationType.Load, () => loadDailyBudgetToDefaultProvider());
   }
 
   Future<bool> hasRequiredInfo() async {
