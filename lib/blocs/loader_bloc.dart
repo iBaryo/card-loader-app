@@ -25,7 +25,11 @@ class CardLoaderBloc {
       this.budgetRepo,
       this.providersRepo,
       this.cardLoader,
-      this.notificationsService});
+      this.notificationsService,
+      NotificationHandler notiHandler}) {
+    notiHandler.register(
+        NotificationType.UseBudget, () => loadDailyBudgetToDefaultProvider());
+  }
 
   Future<bool> hasRequiredInfo() async {
     return true;
@@ -78,10 +82,8 @@ class CardLoaderBloc {
   }
 
   updateBudget(bool isPending, int sum) async {
-    if (sum == 0) return;
     final budget = await budgetRepo.get();
     if (!budget.isActive()) return;
-
     if (isPending) {
       await notificationsService.show(Notification(
           'Update budget', 'When done using your credit, click here',

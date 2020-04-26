@@ -14,9 +14,7 @@ List<Provider> defineProviders() {
           return ProviderLoader(
               createRequest: (profile, sum) => ProviderAppRequest(
                   'https://wolt.com/en/isr/tel-aviv/restaurant/woltilgiftcards'),
-              parseResponse: (rawResponse) {
-                return null;
-              });
+              );
         }),
     Provider(
 //        isEnabled: false,

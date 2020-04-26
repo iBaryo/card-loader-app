@@ -1,4 +1,4 @@
-import 'package:card_loader/blocs/loader_bloc.dart';
+import 'package:rxdart/rxdart.dart';
 
 enum NotificationType {
   Load,
@@ -6,15 +6,16 @@ enum NotificationType {
 }
 
 class NotificationHandler {
-  final Map<NotificationType, Future<dynamic> Function()> handlers;
+  final Map<NotificationType, BehaviorSubject> handlers;
 
-  NotificationHandler(CardLoaderBloc cardLoaderBloc)
+  NotificationHandler()
       : handlers = {
-          NotificationType.Load: () =>
-              cardLoaderBloc.loadDailyBudgetToDefaultProvider(),
-          NotificationType.UseBudget: () async {/*TODO*/},
+          NotificationType.Load: BehaviorSubject(),
+          NotificationType.UseBudget: BehaviorSubject(),
         };
 
-  Future<dynamic> handle(NotificationType notiType) =>
-      handlers.containsKey(notiType) ? handlers[notiType]() : null;
+  handle(NotificationType notiType) => handlers[notiType].publish();
+
+  register(NotificationType notiType, Future<dynamic> Function() handler) =>
+      handlers[notiType].add(handler);
 }

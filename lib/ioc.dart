@@ -47,7 +47,8 @@ Ioc setupIoc() {
     return CardLoader();
   }, singleton: true);
 
-  ioc.bind(NotificationHandler, (ioc) => NotificationHandler(ioc.use(CardLoaderBloc)));
+  ioc.bind(NotificationHandler, (ioc) => NotificationHandler(),
+      singleton: true, lazy: true);
 
   ioc.bind(NotificationsService, (ioc) {
     print('init notifications service...');
@@ -100,8 +101,12 @@ Ioc setupIoc() {
       (ioc) => CardLoaderBloc(
           cardRepo: ioc.use(CardRepo),
           providersRepo: ioc.use(ProvidersRepo),
-          cardLoader: ioc.use(CardLoader)),
-      singleton: true);
+          cardLoader: ioc.use(CardLoader),
+          budgetRepo: ioc.use(BudgetRepo),
+          notificationsService: ioc.use(NotificationsService),
+          notiHandler: ioc.use(NotificationHandler)),
+      singleton: true,
+      lazy: true);
 
   //#endregion
 

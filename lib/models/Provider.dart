@@ -36,10 +36,13 @@ class Provider<T extends ProviderProfileData> extends ProviderDetails {
 
 class ProviderLoader {
   ProviderRequest Function(CompanyCard card, int sum) createRequest;
-  ProviderResponse Function(String rawResponse) parseResponse =
-      (rawRes) => ProviderResponse.parse(jsonDecode(rawRes));
+  ProviderResponse Function(String rawResponse) parseResponse;
 
-  ProviderLoader({this.createRequest, this.parseResponse});
+  ProviderLoader(
+      {this.createRequest,
+      ProviderResponse Function(String rawResponse) parseResponse})
+      : this.parseResponse = parseResponse ??
+            ((String rawRes) => ProviderResponse.parse(jsonDecode(rawRes)));
 //  String url;
 //  String httpMethod;
 //  Future<String> Function(int sum) fetchPayload;
