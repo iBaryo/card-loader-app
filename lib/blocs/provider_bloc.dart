@@ -1,4 +1,3 @@
-import 'package:card_loader/models/Provider.dart';
 import 'package:card_loader/repos/ProvidersRepo.dart';
 
 class ProviderSetupBloc {
@@ -6,9 +5,9 @@ class ProviderSetupBloc {
 
   ProviderSetupBloc({this.repo});
 
-  Future<ProviderDetails> get<T extends ProviderProfileData>(String providerName) =>
+  Future<dynamic> get(String providerName) =>
       repo.getProviderData(providerName);
 
-  set<T extends ProviderProfileData>(String providerName, T data) =>
+  set(String providerName, dynamic data) =>
       repo.save(providerName, data);
 }

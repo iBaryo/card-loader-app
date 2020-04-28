@@ -1,3 +1,4 @@
+import 'package:card_loader/models/DirectLoad.dart';
 import 'package:card_loader/models/Provider.dart';
 import 'package:card_loader/repos/BudgetRepo.dart';
 import 'package:card_loader/repos/CardRepo.dart';
@@ -65,9 +66,19 @@ class CardLoaderBloc {
 
   loadToProvider(ProviderDetails provider, int sum) async {
     try {
-      final card = await cardRepo.get();
-      final providerLoader = await providersRepo.createLoader(provider);
-      final res = await cardLoader.loadToProvider(providerLoader, sum, card);
+      final data = await Future.wait([
+        providersRepo.createLoader(provider),
+        cardRepo.get(),
+        providersRepo.getProviderData(provider.name)
+      ]);
+      final providerLoader = data[0], card = data[1], providerData = data[2];
+      final res = await cardLoader.loadToProvider(
+          providerLoader,
+          DirectLoad(
+              config: provider.directLoad,
+              card: card,
+              providerFields: providerData),
+          sum);
       if (!res.ok) {
         throw res.error;
       } else {

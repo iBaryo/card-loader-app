@@ -1,5 +1,7 @@
+import 'package:card_loader/models/DirectLoad.dart';
 import 'package:card_loader/models/Provider.dart';
 import 'package:card_loader/models/ProviderRequests/ProviderAppRequest.dart';
+import 'package:card_loader/models/ProviderRequests/ProviderHttpRequest.dart';
 import 'package:flutter/material.dart';
 
 List<Provider> defineProviders() {
@@ -12,24 +14,32 @@ List<Provider> defineProviders() {
         color: Colors.blue,
         createLoader: ({providerProfileData}) {
           return ProviderLoader(
-              createRequest: (profile, sum) => ProviderAppRequest(
-                  'https://wolt.com/en/isr/tel-aviv/restaurant/woltilgiftcards'),
-              );
+            createRequest: (_, __) => ProviderAppRequest(
+                'https://wolt.com/en/isr/tel-aviv/restaurant/woltilgiftcards'),
+          );
         }),
     Provider(
-//        isEnabled: false,
+        isActive: true,
         name: 'Teva-Castel',
         desc: 'Pricey place with quality stuff',
         icon: 'assets/teva/icon.png',
         image: 'veggies.jpg',
         color: Colors.green,
-        requiredFields: ['code'],
-        createLoader: ({providerProfileData}) {
-          return ProviderLoader(createRequest: (profile, sum) {
-            return null;
-          }, parseResponse: (rawResponse) {
-            return null;
-          });
+        directLoad: DirectLoadConfig(['code']),
+        createLoader: () {
+          return ProviderLoader(
+            createRequest: (directLoad, sum) {
+              if (!directLoad.isActive()) {
+                return ProviderAppRequest(
+                    'http://lp.infopage.mobi/index.php?page=landing&id=88919&token=4e9239fbe46144506e04081009a09a47');
+              } else {
+                return ProviderHttpRequest('', body: '', headers: {});
+              }
+            },
+//          parseResponse: (rawResponse) {
+//            return null;
+//          }
+          );
         }),
     Provider(
         isActive: false,
@@ -39,8 +49,8 @@ List<Provider> defineProviders() {
         image: 'veggies.jpg',
         color: Colors.grey,
         requiredFields: ['bla'],
-        createLoader: ({providerProfileData}) {
-          return ProviderLoader(createRequest: (profile, sum) {
+        createLoader: () {
+          return ProviderLoader(createRequest: (directLoad, sum) {
             return null;
           }, parseResponse: (rawResponse) {
             return null;
@@ -53,8 +63,8 @@ List<Provider> defineProviders() {
         icon: 'assets/shufersal/icon.png',
         image: 'veggies.jpg',
         color: Colors.red,
-        createLoader: ({providerProfileData}) {
-          return ProviderLoader(createRequest: (profile, sum) {
+        createLoader: () {
+          return ProviderLoader(createRequest: (directLoad, sum) {
             return null;
           }, parseResponse: (rawResponse) {
             return null;
@@ -67,8 +77,8 @@ List<Provider> defineProviders() {
         icon: 'assets/victory/icon.png',
         image: 'veggies.jpg',
         color: Colors.red,
-        createLoader: ({providerProfileData}) {
-          return ProviderLoader(createRequest: (profile, sum) {
+        createLoader: () {
+          return ProviderLoader(createRequest: (directLoad, sum) {
             return null;
           }, parseResponse: (rawResponse) {
             return null;
@@ -81,8 +91,8 @@ List<Provider> defineProviders() {
         icon: 'assets/shookit/icon.png',
         image: 'veggies.jpg',
         color: Colors.red,
-        createLoader: ({providerProfileData}) {
-          return ProviderLoader(createRequest: (profile, sum) {
+        createLoader: () {
+          return ProviderLoader(createRequest: (directLoad, sum) {
             return null;
           }, parseResponse: (rawResponse) {
             return null;
@@ -95,8 +105,8 @@ List<Provider> defineProviders() {
         icon: 'assets/yuda/icon.jpg',
         image: 'veggies.jpg',
         color: Colors.red,
-        createLoader: ({providerProfileData}) {
-          return ProviderLoader(createRequest: (profile, sum) {
+        createLoader: () {
+          return ProviderLoader(createRequest: (directLoad, sum) {
             return null;
           }, parseResponse: (rawResponse) {
             return null;

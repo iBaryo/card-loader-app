@@ -6,7 +6,7 @@ class ProvidersRepo {
   Map<String, Provider> _providers;
 
   Future<dynamic> _providerDataFuture;
-  Map<String, ProviderProfileData> _providersData;
+  Map<String, dynamic> _providersData;
 
   ProvidersRepo({this.storage, List<Provider> providers})
       : _providers = Map<String, Provider>.fromIterable(providers,
@@ -21,7 +21,6 @@ class ProvidersRepo {
     if (provider.requiredFields.length > 0) {
 //      final providersData = await _getProvidersData();
 //      if (!providersData.containsKey(providerName)) {
-//        // provider with no setup.
 //        return null;
 //      }
     }
@@ -63,25 +62,21 @@ class ProvidersRepo {
     return available[0];
   }
 
-  Future<T> getProviderData<T extends ProviderProfileData>(
+  Future<dynamic> getProviderData(
       String providerName) async {
     final providers = await _getProvidersData();
-    if (!providers.containsKey(providerName)) {
-      return null;
-    } else {
-      return providers[providerName];
-    }
+    return providers[providerName] ?? {};
   }
 
-  Future<Map<String, ProviderProfileData>> _getProvidersData() async {
+  Future<Map<String, dynamic>> _getProvidersData() async {
     if (_providersData == null) {
       _providersData =
-          (await _providerDataFuture) ?? Map<String, ProviderProfileData>();
+          (await _providerDataFuture) ?? Map<String, dynamic>();
     }
     return _providersData;
   }
 
-  save(String providerName, ProviderProfileData data) async {
+  save(String providerName, dynamic data) async {
     final providersData = await _getProvidersData();
     providersData[providerName] = data;
     await storage.set('providers', providersData);

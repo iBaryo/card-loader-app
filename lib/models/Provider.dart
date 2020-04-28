@@ -1,9 +1,8 @@
 import 'dart:convert';
 
-import 'package:card_loader/models/CompanyCard.dart';
 import 'package:flutter/material.dart';
 
-abstract class ProviderProfileData {}
+import 'DirectLoad.dart';
 
 class ProviderDetails {
   final bool isActive;
@@ -13,13 +12,14 @@ class ProviderDetails {
   final String image;
   final MaterialColor color;
   final List<String> requiredFields;
+  final DirectLoadConfig directLoad;
 
   ProviderDetails(this.isActive, this.name, this.desc, this.icon, this.image,
-      this.color, this.requiredFields);
+      this.color, this.requiredFields, this.directLoad);
 }
 
-class Provider<T extends ProviderProfileData> extends ProviderDetails {
-  final ProviderLoader Function({T providerProfileData}) createLoader;
+class Provider extends ProviderDetails {
+  final ProviderLoader Function() createLoader;
 
   Provider(
       {bool isActive,
@@ -29,13 +29,14 @@ class Provider<T extends ProviderProfileData> extends ProviderDetails {
       String image,
       MaterialColor color,
       List<String> requiredFields,
+      DirectLoadConfig directLoad,
       this.createLoader})
       : super(isActive ?? true, name, desc, icon, image, color,
-            requiredFields ?? []);
+            requiredFields ?? [], directLoad);
 }
 
 class ProviderLoader {
-  ProviderRequest Function(CompanyCard card, int sum) createRequest;
+  ProviderRequest Function(DirectLoad directLoad, int sum) createRequest;
   ProviderResponse Function(String rawResponse) parseResponse;
 
   ProviderLoader(
