@@ -14,6 +14,6 @@ class DirectLoad {
   DirectLoad({this.config, this.card, this.providerFields});
 
   isActive() =>
-      config.requiredFields.every((f) => providerFields[f] != null) &&
+      (config?.requiredFields?.every((f) => providerFields[f]) != null) &&
       (card?.isActive() ?? false);
 }

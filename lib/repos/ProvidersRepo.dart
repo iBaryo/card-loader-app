@@ -35,7 +35,7 @@ class ProvidersRepo {
   }
 
   Future<List<Provider>> getConfigured() async {
-    final configuredProviders = await _getProvidersData();
+    final configuredProviders = await getAllProviderData();
     return configuredProviders.keys
         .toList()
         .map((provName) => _providers[provName])
@@ -64,11 +64,11 @@ class ProvidersRepo {
 
   Future<dynamic> getProviderData(
       String providerName) async {
-    final providers = await _getProvidersData();
-    return providers[providerName] ?? {};
+    final providers = await getAllProviderData();
+    return providers[providerName] ?? null;
   }
 
-  Future<Map<String, dynamic>> _getProvidersData() async {
+  Future<Map<String, dynamic>> getAllProviderData() async {
     if (_providersData == null) {
       _providersData =
           (await _providerDataFuture) ?? Map<String, dynamic>();
@@ -77,7 +77,7 @@ class ProvidersRepo {
   }
 
   save(String providerName, dynamic data) async {
-    final providersData = await _getProvidersData();
+    final providersData = await getAllProviderData();
     providersData[providerName] = data;
     await storage.set('providers', providersData);
   }

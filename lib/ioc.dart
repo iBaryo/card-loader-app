@@ -90,7 +90,7 @@ Ioc setupIoc() {
   ioc.bind(
       SettingsBloc,
       (ioc) => SettingsBloc(
-          profileRepo: ioc.use(CardRepo),
+          cardRepo: ioc.use(CardRepo),
           providersRepo: ioc.use(ProvidersRepo),
           notificationRepo: ioc.use(ReminderRepo)),
       singleton: true,

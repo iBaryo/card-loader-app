@@ -77,7 +77,7 @@ class CardLoaderBloc {
           DirectLoad(
               config: provider.directLoad,
               card: card,
-              providerFields: providerData),
+              providerFields: providerData ?? {}),
           sum);
       if (!res.ok) {
         throw res.error;
