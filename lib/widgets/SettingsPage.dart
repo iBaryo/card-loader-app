@@ -27,7 +27,7 @@ class SettingsPage extends StatelessWidget {
                     size: 50,
                   ),
                   title: Text('Profile Details'),
-                  subtitle: Text('Card number and personal details.'),
+                  subtitle: Text('Reminders and budget management'),
                 ),
                 ButtonBar(
                   children: <Widget>[
