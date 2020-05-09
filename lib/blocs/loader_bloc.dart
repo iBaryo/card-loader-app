@@ -1,3 +1,4 @@
+import 'package:card_loader/models/Budget.dart';
 import 'package:card_loader/models/DirectLoad.dart';
 import 'package:card_loader/models/Provider.dart';
 import 'package:card_loader/repos/BudgetRepo.dart';
@@ -55,7 +56,7 @@ class CardLoaderBloc {
     int amount = 0;
     final budget = await budgetRepo.get();
     if (budget.isActive()) {
-      final daily = budget.daily();
+      final daily = budget.getDailyBudget();
       if (!budget.enoughFor(daily)) {
         return false;
       }
@@ -100,7 +101,7 @@ class CardLoaderBloc {
           'Update budget', 'When done using your credit, click here',
           payload: NotificationType.UseBudget.toString()));
     } else {
-      budget.state.used += sum;
+      budget.state.add(CreditTransaction(DateTime.now(), sum.toDouble()));
       await budgetRepo.set(budget);
     }
   }

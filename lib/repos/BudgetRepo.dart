@@ -13,25 +13,33 @@ class BudgetRepo extends BaseRepo<Budget> {
 
   @override
   Budget parse(json) {
-    final bSettings = json['settings'], bState = json['state'];
+    final bSettings = json['settings'],
+        bState = json['state'];
 
     return Budget(
-        settings: BudgetSettings(
-            bSettings['limit'], BudgetFrequency.values[bSettings['frequency']]),
-        state: BudgetState(bState['used'],
-            DateTime.fromMicrosecondsSinceEpoch(bState['until'])));
+        settings: BudgetSettings(Map.fromEntries(BudgetFrequency.values.map(
+                (freq) =>
+                MapEntry(freq, bSettings['limits'][freq.toString()])))),
+        state: BudgetState(
+            List<CreditTransaction>.from(bState['transactions'].map((t) =>
+                CreditTransaction(
+                    DateTime.fromMicrosecondsSinceEpoch(t['when']),
+                    t['used'])))));
   }
 
   @override
   stringify(Budget budget) {
     return {
       'settings': {
-        'limit': budget.settings.limit,
-        'frequency': budget.settings.frequency.index
+        'limits': Map.fromEntries(budget.settings.limits.entries
+            .where((entry) => entry.value != null)
+            .map((entry) => MapEntry(entry.key.toString(), entry.value)))
       },
       'state': {
-        'used': budget.state.used,
-        'until': budget.state.until.microsecondsSinceEpoch
+        'transactions': budget.state.transactions
+            .map((t) =>
+        ({'used': t.used, 'when': t.when.microsecondsSinceEpoch}))
+            .toList()
       }
     };
   }

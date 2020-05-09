@@ -131,14 +131,14 @@ Ioc setupIoc() {
 
   ioc.bind(ReminderPanel, (ioc) => ReminderPanel(ioc.use(ReminderRepo)));
   ioc.bind(BudgetPanel, (ioc) => BudgetPanel(ioc.use(BudgetRepo)));
-  ioc.bind(CardPanel, (ioc) => CardPanel(ioc.use(CardRepo)));
+  ioc.bind(DirectLoadPanel, (ioc) => DirectLoadPanel(ioc.use(CardRepo)));
 
   ioc.bind(
       ProfilePage,
       (ioc) => ProfilePage(
             reminderPanel: ioc.use(ReminderPanel),
             budgetPanel: ioc.use(BudgetPanel),
-            cardPanel: ioc.use(CardPanel),
+            cardPanel: ioc.use(DirectLoadPanel),
           ),
       lazy: true);
   //#endregion

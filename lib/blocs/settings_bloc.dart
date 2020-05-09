@@ -22,7 +22,7 @@ class SettingsBloc {
           final directLoad = DirectLoad(
               config: provider.directLoad,
               card: card,
-              providerFields: config
+              providerFields: config ?? {}
           );
 
           return ProviderAvailability(

@@ -24,7 +24,11 @@ class Storage {
     if (data == null) {
       return prefs.remove(key);
     } else {
-      var stringify = jsonEncode(data);
+      var stringify = jsonEncode(data, toEncodable: (obj) {
+        print('error encoding to json');
+        print(obj);
+        return null;
+      });
       return prefs.setString(key, stringify);
     }
   }

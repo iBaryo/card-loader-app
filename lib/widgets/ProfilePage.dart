@@ -17,7 +17,7 @@ class ProfilePageDestination extends Destination {
 class ProfilePage extends StatefulWidget {
   final ReminderPanel reminderPanel;
   final BudgetPanel budgetPanel;
-  final CardPanel cardPanel;
+  final DirectLoadPanel cardPanel;
 
   ProfilePage({this.reminderPanel, this.budgetPanel, this.cardPanel});
 
@@ -30,9 +30,13 @@ class ProfilePage extends StatefulWidget {
 class ProfilePageState extends State<ProfilePage> {
   final List<BasePanel> panels;
 
-  ProfilePageState(
-      ReminderPanel reminderPanel, BudgetPanel budgetPanel, CardPanel cardPanel)
-      : panels = [reminderPanel, budgetPanel, cardPanel];
+  ProfilePageState(ReminderPanel reminderPanel, BudgetPanel budgetPanel,
+      DirectLoadPanel cardPanel)
+      : panels = [
+          reminderPanel,
+          budgetPanel,
+//        cardPanel // -- pending full support
+        ];
 
   @override
   Widget build(BuildContext context) {

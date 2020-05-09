@@ -4,8 +4,8 @@ import 'package:card_loader/widgets/profile/BasePanel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class CardPanel extends BasePanel<CompanyCard> {
-  CardPanel(CardRepo cardRepo) : super(cardRepo);
+class DirectLoadPanel extends BasePanel<CompanyCard> {
+  DirectLoadPanel(CardRepo cardRepo) : super(cardRepo);
 
   @override
   String getTitleText() => 'Direct Load';

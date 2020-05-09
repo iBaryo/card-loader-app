@@ -18,29 +18,33 @@ class Budget implements IActive {
   @override
   bool isActive() => settings.isActive();
 
-  bool enoughFor(double amount) => settings.limit > state.used + amount;
+  bool enoughFor(double amount) =>
+      settings.isPassingAnyLimit(getUsed() + amount);
 
   bool any() => enoughFor(0);
 
-  double daily() {
-    int workDays;
-    switch (settings.frequency) {
-      case BudgetFrequency.DAILY:
-        workDays = 1;
-        break;
-      case BudgetFrequency.WEEKLY:
-        workDays = WORKDAYS_PER_WEEK;
-        break;
-      case BudgetFrequency.MONTHLY:
-        workDays = WORKDAYS_PER_WEEK * 4;
-        break;
+  double getUsed() => state.sum();
+
+  double getDailyBudget() {
+    double limit = 0;
+    int workDays = 1;
+
+    if (settings.hasLimit(BudgetFrequency.DAILY)) {
+      limit = settings.limits[BudgetFrequency.DAILY];
+      workDays = 1;
+    } else if (settings.hasLimit(BudgetFrequency.WEEKLY)) {
+      limit = settings.limits[BudgetFrequency.WEEKLY];
+      workDays = WORKDAYS_PER_WEEK;
+    } else if (settings.hasLimit(BudgetFrequency.MONTHLY)) {
+      limit = settings.limits[BudgetFrequency.MONTHLY];
+      workDays = WORKDAYS_PER_WEEK * 4;
     }
 
-    return settings.limit / workDays;
+    return limit / workDays;
   }
 
   validateState() {
-    if (shouldResetState()) {
+    if (state.transactions.length > 0 && shouldResetState(state.mostRecent().when)) {
       resetState();
     }
   }
@@ -49,48 +53,79 @@ class Budget implements IActive {
     state = BudgetState.empty();
   }
 
-  bool shouldResetState() {
-    if (state.until.microsecondsSinceEpoch == 0) {
+  bool shouldResetState(DateTime stateTime) {
+    if (stateTime.microsecondsSinceEpoch == 0) {
       return false;
     }
 
     final now = DateTime.now();
-    switch (settings.frequency) {
-      case BudgetFrequency.DAILY:
-        return now.isAfter(state.until);
-      case BudgetFrequency.WEEKLY:
-        final nextWeekReset = state.until
-            .add(Duration(days: DateTime.daysPerWeek - state.until.weekday));
-        return now.isAfter(nextWeekReset);
-      case BudgetFrequency.MONTHLY:
-        return state.until.month != now.month;
-      default:
-        return false;
-    }
+    // ORDER MATTERS! -- need to keep state according to longest frequency.
+    return (settings.hasLimit(BudgetFrequency.MONTHLY) &&
+        stateTime.month != now.month) ||
+        (settings.hasLimit(BudgetFrequency.WEEKLY) &&
+            now.isAfter(getNextWeek(stateTime))) ||
+        (settings.hasLimit(BudgetFrequency.DAILY) && now.isAfter(stateTime));
   }
+
+  DateTime getNextWeek(DateTime dateTime) =>
+      dateTime.add(Duration(days: DateTime.daysPerWeek - dateTime.weekday));
 }
 
 class BudgetState {
-  double used;
-  DateTime until;
+  final List<CreditTransaction> transactions;
 
-  BudgetState(this.used, this.until);
+  BudgetState(this.transactions);
 
-  BudgetState.empty() {
-    used = 0;
-    until = DateTime.fromMicrosecondsSinceEpoch(0);
-  }
+  BudgetState.empty() : transactions = [];
+
+  add(CreditTransaction transaction) => transactions.add(transaction);
+
+  BudgetState getSince(DateTime since) =>
+      BudgetState(transactions.where((tran) => since.isBefore(tran.when)));
+
+  double sum() =>
+      transactions.map((tran) => tran.used).reduce((res, sum) => res + sum);
+
+  CreditTransaction mostRecent() =>
+      transactions.reduce((recent, cur) =>
+      recent.when.isAfter(cur.when)
+          ? recent
+          : cur) ?? CreditTransaction;
+}
+
+class CreditTransaction {
+  final DateTime when;
+  final double used;
+
+  CreditTransaction(this.when, this.used);
 }
 
 class BudgetSettings with IActive {
-  double limit = 0;
-  BudgetFrequency frequency = BudgetFrequency.DAILY;
+  Map<BudgetFrequency, double> limits = {
+    BudgetFrequency.DAILY: null,
+    BudgetFrequency.WEEKLY: null,
+    BudgetFrequency.MONTHLY: null,
+  };
 
   BudgetSettings.empty();
 
-  BudgetSettings(this.limit, this.frequency);
+  BudgetSettings(this.limits);
 
-  bool isActive() => limit > 0;
+  bool hasLimit(BudgetFrequency freq) => limits[freq] != null;
+  bool reset(BudgetFrequency freq) => limits[freq] = null;
+
+  bool isPassingAnyLimit(double sum) =>
+      limits.values.any((limit) => (limit ?? -1) < sum);
+
+  bool isActive() => limits.values.any((limit) => limit != null) && isValid();
+
+  bool isValid() =>
+      (limits[BudgetFrequency.DAILY] ?? double.minPositive) <=
+          (limits[BudgetFrequency.WEEKLY] ?? double.maxFinite) &&
+          (limits[BudgetFrequency.WEEKLY] ?? double.minPositive) <=
+              (limits[BudgetFrequency.MONTHLY] ?? double.maxFinite) &&
+          (limits[BudgetFrequency.DAILY] ?? double.minPositive) <=
+              (limits[BudgetFrequency.MONTHLY] ?? double.maxFinite);
 }
 
 enum BudgetFrequency { DAILY, WEEKLY, MONTHLY }

@@ -56,15 +56,18 @@ abstract class BasePanel<T extends IActive> {
 
   Future onEnabled(T model) => save(model);
 
-  onModelChange(
-      T model, void Function(T model) updateAction, void Function(VoidCallback cb) invokeChange) async {
+  onModelChange(T model, void Function(T model) updateAction,
+      void Function(VoidCallback cb) invokeChange) async {
     _debouncer.run(() {
       try {
         updateAction(model);
         isEnabled = true;
         if (shouldSave(model)) {
-                _onAsyncAction(() => save(model), invokeChange);
-              }
+          _onAsyncAction(() => save(model), invokeChange);
+        }
+        else {
+          invokeChange(() {});
+        }
       } catch (e) {
         // ignore.
       }
